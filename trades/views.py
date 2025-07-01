@@ -1,12 +1,12 @@
-from django.shortcuts import render, redirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Avg, Count, Q
+from datetime import timedelta, date
 
 from .models import Trade
 from .forms import TradeForm
-from datetime import timedelta, date
+
 
 @login_required
 def dashboard(request):
@@ -14,28 +14,29 @@ def dashboard(request):
     Displays trading stats, optionally filtered by date range.
     """
     range_filter = request.GET.get('daterange')
-trades = Trade.objects.filter(user=request.user)
+    trades = Trade.objects.filter(user=request.user)
 
-# Apply date range if present
-if range_filter:
-    try:
-        start_str, end_str = range_filter.split(' - ')
-        start_date = date.fromisoformat(start_str)
-        end_date = date.fromisoformat(end_str)
-        trades = trades.filter(entry_date__range=(start_date, end_date))
-    except ValueError:
-        pass  # Invalid format, ignore filter
+    # Apply date range if present
+    if range_filter:
+        try:
+            start_str, end_str = range_filter.split(' - ')
+            start_date = date.fromisoformat(start_str)
+            end_date = date.fromisoformat(end_str)
+            trades = trades.filter(entry_date__range=(start_date, end_date))
+        except ValueError:
+            pass  # Invalid format, ignore filter
 
-
-    # Stats logic (same as before)
+    # Stats logic
     total_trades = trades.count()
     wins = trades.filter(outcome='win').count()
     closed_trades = trades.exclude(outcome='open').count()
     open_trades = trades.filter(outcome='open').count()
 
     win_rate = (wins / closed_trades) * 100 if closed_trades > 0 else 0
+
     return_values = [t.return_percent() for t in trades if t.return_percent() is not None]
     avg_return = sum(return_values) / len(return_values) if return_values else 0
+
     holding_days = [t.holding_days() for t in trades if t.holding_days() is not None]
     avg_holding = sum(holding_days) / len(holding_days) if holding_days else 0
 
@@ -81,6 +82,7 @@ def add_trade(request):
 
     return render(request, 'trades/add_trade.html', {'form': form})
 
+
 @login_required
 def edit_trade(request, pk):
     """
@@ -98,6 +100,7 @@ def edit_trade(request, pk):
         form = TradeForm(instance=trade)
 
     return render(request, 'trades/add_trade.html', {'form': form})
+
 
 @login_required
 def delete_trade(request, pk):
