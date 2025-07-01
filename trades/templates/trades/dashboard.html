@@ -5,21 +5,37 @@
 
 <form method="get" class="mb-4">
   <div class="row g-2 align-items-end">
-    <div class="col-md-auto">
-      <label for="range" class="form-label">Filter by Date</label>
-      <select name="range" id="range" class="form-select">
-        <option value="all" {% if range_filter == 'all' %}selected{% endif %}>All Time</option>
-        <option value="today" {% if range_filter == 'today' %}selected{% endif %}>Today</option>
-        <option value="this_week" {% if range_filter == 'this_week' %}selected{% endif %}>This Week</option>
-        <option value="this_month" {% if range_filter == 'this_month' %}selected{% endif %}>This Month</option>
-        <option value="last_month" {% if range_filter == 'last_month' %}selected{% endif %}>Last Month</option>
-      </select>
+    <div class="col-auto">
+      <label for="daterange" class="form-label">Select Date Range</label>
+      <input type="text" class="form-control" name="daterange" id="daterange"
+             value="{{ request.GET.daterange|default:'' }}" autocomplete="off">
     </div>
-    <div class="col-md-auto">
-      <button class="btn btn-primary" type="submit">Apply</button>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Apply</button>
     </div>
   </div>
 </form>
+
+<script>
+$(function() {
+  $('#daterange').daterangepicker({
+    autoUpdateInput: false,
+    locale: {
+      cancelLabel: 'Clear',
+      format: 'YYYY-MM-DD'
+    }
+  });
+
+  $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+    $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+  });
+
+  $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
+    $(this).val('');
+  });
+});
+</script>
+
 
 
 <div class="row text-center">

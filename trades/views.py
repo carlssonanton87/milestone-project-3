@@ -13,24 +13,19 @@ def dashboard(request):
     """
     Displays trading stats, optionally filtered by date range.
     """
-    range_filter = request.GET.get('range', 'all')
-    today = date.today()
+    range_filter = request.GET.get('daterange')
+trades = Trade.objects.filter(user=request.user)
 
-    # Start with all trades
-    trades = Trade.objects.filter(user=request.user)
+# Apply date range if present
+if range_filter:
+    try:
+        start_str, end_str = range_filter.split(' - ')
+        start_date = date.fromisoformat(start_str)
+        end_date = date.fromisoformat(end_str)
+        trades = trades.filter(entry_date__range=(start_date, end_date))
+    except ValueError:
+        pass  # Invalid format, ignore filter
 
-    # Apply date filters
-    if range_filter == 'today':
-        trades = trades.filter(entry_date=today)
-    elif range_filter == 'this_week':
-        start = today - timedelta(days=today.weekday())
-        trades = trades.filter(entry_date__gte=start)
-    elif range_filter == 'this_month':
-        trades = trades.filter(entry_date__month=today.month, entry_date__year=today.year)
-    elif range_filter == 'last_month':
-        last_month = today.replace(day=1) - timedelta(days=1)
-        trades = trades.filter(entry_date__month=last_month.month, entry_date__year=last_month.year)
-    # You can expand to more ranges later (this_year, custom, etc.)
 
     # Stats logic (same as before)
     total_trades = trades.count()
