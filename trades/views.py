@@ -7,6 +7,10 @@ from datetime import timedelta, date
 from .models import Trade
 from .forms import TradeForm
 
+def landing_redirect(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    return render(request, "trades/landing.html")
 
 @login_required
 def dashboard(request):
