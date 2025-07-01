@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -43,3 +44,35 @@ def add_trade(request):
         form = TradeForm()
 
     return render(request, 'trades/add_trade.html', {'form': form})
+
+@login_required
+def edit_trade(request, pk):
+    """
+    Allows the logged-in user to edit one of their trades.
+    """
+    trade = get_object_or_404(Trade, pk=pk, user=request.user)
+
+    if request.method == 'POST':
+        form = TradeForm(request.POST, instance=trade)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Trade updated successfully.")
+            return redirect('trade_list')
+    else:
+        form = TradeForm(instance=trade)
+
+    return render(request, 'trades/add_trade.html', {'form': form})
+
+@login_required
+def delete_trade(request, pk):
+    """
+    Confirms and deletes a user's trade if it exists.
+    """
+    trade = get_object_or_404(Trade, pk=pk, user=request.user)
+
+    if request.method == 'POST':
+        trade.delete()
+        messages.success(request, "Trade deleted successfully.")
+        return redirect('trade_list')
+
+    return render(request, 'trades/delete_trade.html', {'trade': trade})

@@ -1,0 +1,12 @@
+{% extends 'trades/base.html' %}
+
+{% block content %}
+<h2>Confirm Delete</h2>
+<p>Are you sure you want to delete your trade in <strong>{{ trade.instrument }}</strong> from {{ trade.entry_date }}?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="{% url 'trade_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
