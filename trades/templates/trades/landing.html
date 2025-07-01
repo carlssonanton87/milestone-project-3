@@ -1,0 +1,12 @@
+{% extends "trades/base.html" %}
+{% block content %}
+<div class="text-center py-5">
+  <h1 class="display-4 mb-3">Welcome to TradeTracker</h1>
+  <p class="lead mb-4">Track your trades, measure performance, and optimize your strategy — all in one place.</p>
+
+  <div class="d-flex justify-content-center gap-3 flex-wrap">
+    <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
+    <a href="{% url 'signup' %}" class="btn btn-outline-secondary btn-lg">Sign Up</a>
+  </div>
+</div>
+{% endblock %}

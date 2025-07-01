@@ -67,7 +67,18 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'trade_list' %}">My Trades</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'add_trade' %}">Add Trade</a></li>
+                    {% if user.is_authenticated %}
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+  </li>
+{% else %}
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'login' %}">Login</a>
+  </li>
+{% endif %}
                 </ul>
+                
+
             </div>
         </div>
     </nav>
