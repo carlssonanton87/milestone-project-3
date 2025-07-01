@@ -1,13 +1,10 @@
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import Trade
 
-def dashboard(request):
-    return render(request, 'trades/dashboard.html')
-
-
-
+@login_required
 def trade_list(request):
-    return render(request, 'trades/trade_list.html')
+    # Get all trades belonging to the logged-in user
+    trades = Trade.objects.filter(user=request.user).order_by('-entry_date')
 
-def add_trade(request):
-    return render(request, 'trades/add_trade.html')
-
+    # Send the trades to the template
+    return render(request, 'trades/trade_list.html', {'trades': trades})
