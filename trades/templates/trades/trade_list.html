@@ -13,8 +13,9 @@
             <th>Result</th>
             <th>Return %</th>
             <th>Holding (days)</th>
+            <th>Actions</th>
         </tr>
-        <th>Actions</th>
+        
     </thead>
     <tbody>
         {% for trade in trades %}
@@ -37,16 +38,25 @@
                 {% else %}
                     —
                 {% endif %}
+                </td>
+                <td>
+
+                
+                 {% if trade.pk %}
+  <a href="{% url 'edit_trade' trade.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+  <a href="{% url 'delete_trade' trade.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+{% else %}
+  <span class="text-muted">Invalid trade</span>
+{% endif %}
             </td>
+            
         </tr>
         {% empty %}
         <tr>
             <td colspan="7">You haven't logged any trades yet.</td>
         </tr>
-        <td>
-         <a href="{% url 'edit_trade' trade.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
-         <a href="{% url 'delete_trade' trade.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
-        </td>
+       
+
         {% endfor %}
     </tbody>
 </table>
