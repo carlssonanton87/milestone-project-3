@@ -7,34 +7,54 @@
   <div class="row g-2 align-items-end">
     <div class="col-auto">
       <label for="daterange" class="form-label">Select Date Range</label>
-      <input type="text" class="form-control" name="daterange" id="daterange"
-             value="{{ request.GET.daterange|default:'' }}" autocomplete="off">
+      <input type="text" id="daterange" name="daterange" class="form-control"
+       value="{{ request.GET.daterange|default:'' }}" autocomplete="off" />
+
+
     </div>
     <div class="col-auto">
-      <button type="submit" class="btn btn-primary">Apply</button>
+      <button type="submit" class="btn btn-outline-dark">Apply</button>
     </div>
   </div>
 </form>
 
 <script>
 $(function() {
+  function applyRange(start, end) {
+    $('#daterange').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+  }
+
   $('#daterange').daterangepicker({
-    autoUpdateInput: false,
+    startDate: moment().subtract(6, 'days'),
+    endDate: moment(),
+    ranges: {
+       'Today': [moment(), moment()],
+       'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+       'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+       'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+       'This Month': [moment().startOf('month'), moment().endOf('month')],
+       'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    },
     locale: {
-      cancelLabel: 'Clear',
-      format: 'YYYY-MM-DD'
+      format: 'YYYY-MM-DD',
+      cancelLabel: 'Clear'
     }
-  });
+  }, applyRange);
 
-  $('#daterange').on('apply.daterangepicker', function(ev, picker) {
-    $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
-  });
+  // Fill input initially if value already exists
+  let existing = $('#daterange').val();
+  if (!existing) {
+    applyRange(moment().subtract(6, 'days'), moment());
+  }
 
+  // Clear on cancel
   $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
     $(this).val('');
   });
 });
 </script>
+
+
 
 
 
