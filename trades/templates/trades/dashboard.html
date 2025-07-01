@@ -3,56 +3,49 @@
 
 <h2 class="mb-4">Trading Dashboard</h2>
 
-<form method="get" class="mb-4">
-  <div class="row g-2 align-items-end">
-    <div class="col-auto">
-      <label for="daterange" class="form-label">Select Date Range</label>
-      <input type="text" id="daterange" name="daterange" class="form-control"
-       value="{{ request.GET.daterange|default:'' }}" autocomplete="off" />
+<!-- Filter Row: Side-by-Side Equal Width -->
+<div class="row mb-4 g-3 align-items-start">
 
-
-    </div>
-    <div class="col-auto">
-      <button type="submit" class="btn btn-outline-dark">Apply</button>
+  <!-- Left Column: Preset Buttons (6/12 columns = 50%) -->
+  <div class="col-12 col-md-6">
+    <div class="d-flex flex-wrap gap-2">
+      <a href="?range=today" class="btn btn-outline-secondary btn-sm">Today</a>
+      <a href="?range=yesterday" class="btn btn-outline-secondary btn-sm">Yesterday</a>
+      <a href="?range=this_week" class="btn btn-outline-secondary btn-sm">This wk.</a>
+      <a href="?range=last_week" class="btn btn-outline-secondary btn-sm">Last wk.</a>
+      <a href="?range=this_month" class="btn btn-outline-secondary btn-sm">This mo.</a>
+      <a href="?range=last_month" class="btn btn-outline-secondary btn-sm">Last mo.</a>
+      <a href="?range=last_3_months" class="btn btn-outline-secondary btn-sm">Last 3 mo.</a>
+      <a href="?range=this_year" class="btn btn-outline-secondary btn-sm">This yr.</a>
+      <a href="?range=last_year" class="btn btn-outline-secondary btn-sm">Last yr.</a>
+      <a href="?range=all" class="btn btn-outline-dark btn-sm">Reset</a>
     </div>
   </div>
-</form>
 
-<script>
-$(function() {
-  function applyRange(start, end) {
-    $('#daterange').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
-  }
+  <!-- Right Column: Slider (6/12 columns = 50%) -->
+  <div class="col-12 col-md-6">
+    <form method="get" id="slider-form">
+      <input type="hidden" name="start" id="start">
+      <input type="hidden" name="end" id="end">
 
-  $('#daterange').daterangepicker({
-    startDate: moment().subtract(6, 'days'),
-    endDate: moment(),
-    ranges: {
-       'Today': [moment(), moment()],
-       'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-       'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-       'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-       'This Month': [moment().startOf('month'), moment().endOf('month')],
-       'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    },
-    locale: {
-      format: 'YYYY-MM-DD',
-      cancelLabel: 'Clear'
-    }
-  }, applyRange);
+    
+      <div id="date-slider"></div>
+      <div class="d-flex justify-content-between mt-1 text-muted">
+        <small id="slider-start-label">Start</small>
+        <small id="slider-end-label">End</small>
+      </div>
+    </form>
+  </div>
 
-  // Fill input initially if value already exists
-  let existing = $('#daterange').val();
-  if (!existing) {
-    applyRange(moment().subtract(6, 'days'), moment());
-  }
+</div>
 
-  // Clear on cancel
-  $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
-    $(this).val('');
-  });
-});
-</script>
+
+
+
+
+
+
+
 
 
 
@@ -105,4 +98,65 @@ $(function() {
   </div>
 </div>
 
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const slider = document.getElementById('date-slider');
+
+  // Just in case the element isn't found
+  if (!slider || typeof noUiSlider === 'undefined') {
+    console.warn("Slider not found or noUiSlider not loaded");
+    return;
+  }
+
+  const startDate = new Date("2025-01-01").getTime();
+  const endDate = new Date().getTime();
+
+  const params = new URLSearchParams(window.location.search);
+if (params.get('range') === 'all') {
+  params.delete('start');
+  params.delete('end');
+  history.replaceState(null, '', '?' + params.toString());
+}
+
+  noUiSlider.create(slider, {
+    start: [startDate, endDate],
+    connect: true,
+    range: {
+      min: startDate,
+      max: endDate
+    },
+    step: 24 * 60 * 60 * 1000,
+    tooltips: [true, true],
+    format: {
+  to: ts => {
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return ''; // protect against "all" or bad values
+    return d.toISOString().split('T')[0];
+  },
+  from: str => {
+    const t = new Date(str).getTime();
+    return isNaN(t) ? null : t;
+  }
+}
+
+  });
+
+  const startLabel = document.getElementById('slider-start-label');
+  const endLabel = document.getElementById('slider-end-label');
+
+  slider.noUiSlider.on('change', function (values) {
+    const start = values[0];
+    const end = values[1];
+
+    startLabel.textContent = start;
+    endLabel.textContent = end;
+
+    const params = new URLSearchParams(window.location.search);
+    params.set('start', start);
+    params.set('end', end);
+    window.location.search = params.toString();
+  });
+});
+</script>
 {% endblock %}

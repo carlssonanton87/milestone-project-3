@@ -11,32 +11,55 @@ from .forms import TradeForm
 @login_required
 def dashboard(request):
     """
-    Displays trading stats, optionally filtered by date range.
+    Displays trading stats, optionally filtered by date presets.
     """
-    range_filter = request.GET.get('daterange')
+    range_filter = request.GET.get('range', 'all')
+    today = date.today()
+
+    # Start with all trades
     trades = Trade.objects.filter(user=request.user)
 
-    # Apply date range if present
-    if range_filter:
-        try:
-            start_str, end_str = range_filter.split(' - ')
-            start_date = date.fromisoformat(start_str)
-            end_date = date.fromisoformat(end_str)
-            trades = trades.filter(entry_date__range=(start_date, end_date))
-        except ValueError:
-            pass  # Invalid format, ignore filter
+    # Apply filter presets
+    if range_filter == 'today':
+        trades = trades.filter(entry_date=today)
+    elif range_filter == 'yesterday':
+        trades = trades.filter(entry_date=today - timedelta(days=1))
+    elif range_filter == 'this_week':
+        start = today - timedelta(days=today.weekday())
+        trades = trades.filter(entry_date__gte=start)
+    elif range_filter == 'last_week':
+        start = today - timedelta(days=today.weekday() + 7)
+        end = start + timedelta(days=6)
+        trades = trades.filter(entry_date__range=(start, end))
+    elif range_filter == 'this_month':
+        trades = trades.filter(entry_date__month=today.month, entry_date__year=today.year)
+    elif range_filter == 'last_month':
+        last_month = today.replace(day=1) - timedelta(days=1)
+        trades = trades.filter(entry_date__month=last_month.month, entry_date__year=last_month.year)
+    elif range_filter == 'this_year':
+        trades = trades.filter(entry_date__year=today.year)
 
-    # Stats logic
+    # Optional: date range from slider
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    if start and end:
+       try:
+           start_date = date.fromisoformat(start)
+           end_date = date.fromisoformat(end)
+           trades = trades.filter(entry_date__range=(start_date, end_date))
+       except ValueError:
+          pass
+
+
+    # Stats calculation
     total_trades = trades.count()
     wins = trades.filter(outcome='win').count()
     closed_trades = trades.exclude(outcome='open').count()
     open_trades = trades.filter(outcome='open').count()
 
     win_rate = (wins / closed_trades) * 100 if closed_trades > 0 else 0
-
     return_values = [t.return_percent() for t in trades if t.return_percent() is not None]
     avg_return = sum(return_values) / len(return_values) if return_values else 0
-
     holding_days = [t.holding_days() for t in trades if t.holding_days() is not None]
     avg_holding = sum(holding_days) / len(holding_days) if holding_days else 0
 
@@ -51,6 +74,8 @@ def dashboard(request):
     }
 
     return render(request, 'trades/dashboard.html', context)
+
+
 
 
 @login_required
