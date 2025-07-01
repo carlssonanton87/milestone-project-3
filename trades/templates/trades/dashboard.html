@@ -3,6 +3,25 @@
 
 <h2 class="mb-4">Trading Dashboard</h2>
 
+<form method="get" class="mb-4">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-auto">
+      <label for="range" class="form-label">Filter by Date</label>
+      <select name="range" id="range" class="form-select">
+        <option value="all" {% if range_filter == 'all' %}selected{% endif %}>All Time</option>
+        <option value="today" {% if range_filter == 'today' %}selected{% endif %}>Today</option>
+        <option value="this_week" {% if range_filter == 'this_week' %}selected{% endif %}>This Week</option>
+        <option value="this_month" {% if range_filter == 'this_month' %}selected{% endif %}>This Month</option>
+        <option value="last_month" {% if range_filter == 'last_month' %}selected{% endif %}>Last Month</option>
+      </select>
+    </div>
+    <div class="col-md-auto">
+      <button class="btn btn-primary" type="submit">Apply</button>
+    </div>
+  </div>
+</form>
+
+
 <div class="row text-center">
   <div class="col-md-4 mb-4">
     <div class="card bg-primary text-white">

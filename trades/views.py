@@ -6,27 +6,41 @@ from django.db.models import Avg, Count, Q
 
 from .models import Trade
 from .forms import TradeForm
-
+from datetime import timedelta, date
 
 @login_required
 def dashboard(request):
     """
-    Display trade performance stats for the logged-in user.
+    Displays trading stats, optionally filtered by date range.
     """
+    range_filter = request.GET.get('range', 'all')
+    today = date.today()
+
+    # Start with all trades
     trades = Trade.objects.filter(user=request.user)
 
+    # Apply date filters
+    if range_filter == 'today':
+        trades = trades.filter(entry_date=today)
+    elif range_filter == 'this_week':
+        start = today - timedelta(days=today.weekday())
+        trades = trades.filter(entry_date__gte=start)
+    elif range_filter == 'this_month':
+        trades = trades.filter(entry_date__month=today.month, entry_date__year=today.year)
+    elif range_filter == 'last_month':
+        last_month = today.replace(day=1) - timedelta(days=1)
+        trades = trades.filter(entry_date__month=last_month.month, entry_date__year=last_month.year)
+    # You can expand to more ranges later (this_year, custom, etc.)
+
+    # Stats logic (same as before)
     total_trades = trades.count()
     wins = trades.filter(outcome='win').count()
     closed_trades = trades.exclude(outcome='open').count()
     open_trades = trades.filter(outcome='open').count()
 
     win_rate = (wins / closed_trades) * 100 if closed_trades > 0 else 0
-
-    # Calculate average return only for trades with an exit price
     return_values = [t.return_percent() for t in trades if t.return_percent() is not None]
     avg_return = sum(return_values) / len(return_values) if return_values else 0
-
-    # Calculate average holding days only for trades with exit_date
     holding_days = [t.holding_days() for t in trades if t.holding_days() is not None]
     avg_holding = sum(holding_days) / len(holding_days) if holding_days else 0
 
@@ -37,6 +51,7 @@ def dashboard(request):
         'win_rate': round(win_rate, 2),
         'avg_return': round(avg_return, 2),
         'avg_holding': round(avg_holding, 2),
+        'range_filter': range_filter,
     }
 
     return render(request, 'trades/dashboard.html', context)
