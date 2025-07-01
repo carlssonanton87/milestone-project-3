@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Avg, Count, Q
 
 from .models import Trade
 from .forms import TradeForm
@@ -10,10 +11,35 @@ from .forms import TradeForm
 @login_required
 def dashboard(request):
     """
-    Displays the main dashboard view with a welcome message.
-    Future version will include win rate, return %, and other stats.
+    Display trade performance stats for the logged-in user.
     """
-    return render(request, 'trades/dashboard.html')
+    trades = Trade.objects.filter(user=request.user)
+
+    total_trades = trades.count()
+    wins = trades.filter(outcome='win').count()
+    closed_trades = trades.exclude(outcome='open').count()
+    open_trades = trades.filter(outcome='open').count()
+
+    win_rate = (wins / closed_trades) * 100 if closed_trades > 0 else 0
+
+    # Calculate average return only for trades with an exit price
+    return_values = [t.return_percent() for t in trades if t.return_percent() is not None]
+    avg_return = sum(return_values) / len(return_values) if return_values else 0
+
+    # Calculate average holding days only for trades with exit_date
+    holding_days = [t.holding_days() for t in trades if t.holding_days() is not None]
+    avg_holding = sum(holding_days) / len(holding_days) if holding_days else 0
+
+    context = {
+        'total_trades': total_trades,
+        'open_trades': open_trades,
+        'closed_trades': closed_trades,
+        'win_rate': round(win_rate, 2),
+        'avg_return': round(avg_return, 2),
+        'avg_holding': round(avg_holding, 2),
+    }
+
+    return render(request, 'trades/dashboard.html', context)
 
 
 @login_required
