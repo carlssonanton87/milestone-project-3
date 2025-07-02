@@ -101,8 +101,72 @@
     </div>
   </div>
 </div>
-
 </div>
+
+
+<!-- Return % over time chart -->
+{% if chart_labels and chart_returns %}
+
+<div class="card mt-5">
+  <div class="card-body">
+    <h5 class="card-title">Return % Over Time</h5>
+    <canvas id="returnsChart" height="100"></canvas>
+  </div>
+</div>
+
+
+{{ chart_labels_json|json_script:"labels-data" }}
+{{ chart_returns_json|json_script:"returns-data" }}
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const chartLabels = JSON.parse(document.getElementById('labels-data').textContent);
+  const chartData = JSON.parse(document.getElementById('returns-data').textContent);
+
+  const ctx = document.getElementById('returnsChart');
+  if (!ctx) {
+    console.error("Canvas element #returnsChart not found.");
+    return;
+  }
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: chartLabels,
+      datasets: [{
+        label: 'Return %',
+        data: chartData,
+        borderColor: 'rgba(13,110,253,1)',
+        backgroundColor: 'rgba(13,110,253,0.1)',
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: false,
+          title: {
+            display: true,
+            text: 'Return %'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Trade Date'
+          }
+        }
+      }
+    }
+  });
+});
+</script>
+
+{% endif %}
 
 
 <script>
@@ -155,8 +219,8 @@ if (params.get('range') === 'all') {
     const start = values[0];
     const end = values[1];
 
-    startLabel.textContent = start;
-    endLabel.textContent = end;
+    startLabel.textContent = new Date(start).toISOString().split('T')[0];
+    endLabel.textContent = new Date(end).toISOString().split('T')[0];
 
     const params = new URLSearchParams(window.location.search);
     params.set('start', start);

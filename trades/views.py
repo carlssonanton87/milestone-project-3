@@ -8,6 +8,9 @@ from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.shortcuts import redirect
+from collections import defaultdict
+from django.utils.safestring import mark_safe
+import json
 
 from .models import Trade
 from .forms import TradeForm
@@ -95,6 +98,27 @@ def dashboard(request):
     holding_days = [t.holding_days() for t in trades if t.holding_days() is not None]
     avg_holding = sum(holding_days) / len(holding_days) if holding_days else 0
 
+    
+    # all stats logic in dashboard view
+    chart_data = defaultdict(list)
+
+    for trade in trades.exclude(outcome='open').order_by('entry_date'):
+        if trade.return_percent() is not None:
+            chart_data[str(trade.entry_date)].append(float(trade.return_percent()))
+
+        # Prepare data for chart (entry_date + return %)
+    chart_labels = []
+    chart_returns = []
+
+    for day, returns in chart_data.items():
+        chart_labels.append(day)
+        chart_returns.append(round(sum(returns) / len(returns), 2))
+
+  
+
+ 
+
+
     context = {
         'total_trades': total_trades,
         'open_trades': open_trades,
@@ -103,6 +127,10 @@ def dashboard(request):
         'avg_return': round(avg_return, 2),
         'avg_holding': round(avg_holding, 2),
         'range_filter': range_filter,
+        'chart_labels': chart_labels,
+        'chart_returns': chart_returns,
+        'chart_labels_json': chart_labels,
+        'chart_returns_json': chart_returns,
     }
 
     return render(request, 'trades/dashboard.html', context)
