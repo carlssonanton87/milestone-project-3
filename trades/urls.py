@@ -9,4 +9,6 @@ urlpatterns = [
     path('trades/edit/<int:pk>/', views.edit_trade, name='edit_trade'),
     path('trades/delete/<int:pk>/', views.delete_trade, name='delete_trade'),
     path('', views.landing_redirect, name='landing'),
+    path('error/', views.trigger_error),
+
 ]

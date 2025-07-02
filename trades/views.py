@@ -14,6 +14,8 @@ def landing_redirect(request):
         return redirect('dashboard')
     return render(request, "trades/landing.html")
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
 
 
 def signup_view(request):

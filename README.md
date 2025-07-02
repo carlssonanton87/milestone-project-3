@@ -51,17 +51,8 @@ Methods:
 
 ## Testing
 
-### Manual Testing
-- All views tested manually on Chrome and Firefox
-- Add/Edit/Delete trades — ✅ working
-- Dashboard stats update correctly — ✅
-- Date slider and presets filter trades — ✅
+We have included all the testing details in a separate document → [TESTING.md](TESTING.md).
 
-### Automated Testing
-```bash
-python manage.py test
-```
-*Tests to be added for model methods and views.*
 
 ## Deployment
 
