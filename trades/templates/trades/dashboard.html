@@ -52,50 +52,56 @@
 
 
 <div class="row text-center">
-  <div class="col-md-4 mb-4">
-    <div class="card bg-primary text-white">
-      <div class="card-body">
-        <h5>Total Trades</h5>
-        <p class="fs-4">{{ total_trades }}</p>
-      </div>
+  <!-- Total Trades -->
+<div class="col-md-4 mb-4">
+  <div class="card bg-primary text-white">
+    <div class="card-body">
+      <h5><i class="bi bi-clipboard-data me-2"></i>Total Trades</h5>
+      <p class="fs-4">{{ total_trades }}</p>
     </div>
   </div>
+</div>
 
-  <div class="col-md-4 mb-4">
-    <div class="card bg-success text-white">
-      <div class="card-body">
-        <h5>Win Rate</h5>
-        <p class="fs-4">{{ win_rate }}%</p>
-      </div>
+<!-- Win Rate -->
+<div class="col-md-4 mb-4">
+  <div class="card bg-success text-white">
+    <div class="card-body">
+      <h5><i class="bi bi-trophy me-2"></i>Win Rate</h5>
+      <p class="fs-4">{{ win_rate }}%</p>
     </div>
   </div>
+</div>
 
-  <div class="col-md-4 mb-4">
-    <div class="card bg-warning text-dark">
-      <div class="card-body">
-        <h5>Average Return</h5>
-        <p class="fs-4">{{ avg_return }}%</p>
-      </div>
+<!-- Average Return -->
+<div class="col-md-4 mb-4">
+  <div class="card bg-warning text-dark">
+    <div class="card-body">
+      <h5><i class="bi bi-graph-up-arrow me-2"></i>Average Return</h5>
+      <p class="fs-4">{{ avg_return }}%</p>
     </div>
   </div>
+</div>
 
-  <div class="col-md-6 mb-4">
-    <div class="card bg-info text-dark">
-      <div class="card-body">
-        <h5>Average Holding Time</h5>
-        <p class="fs-4">{{ avg_holding }} days</p>
-      </div>
+<!-- Average Holding Time -->
+<div class="col-md-6 mb-4">
+  <div class="card bg-info text-dark">
+    <div class="card-body">
+      <h5><i class="bi bi-clock-history me-2"></i>Average Holding Time</h5>
+      <p class="fs-4">{{ avg_holding }} days</p>
     </div>
   </div>
+</div>
 
-  <div class="col-md-6 mb-4">
-    <div class="card bg-dark text-white">
-      <div class="card-body">
-        <h5>Open vs Closed</h5>
-        <p class="fs-4">{{ open_trades }} open / {{ closed_trades }} closed</p>
-      </div>
+<!-- Open vs Closed -->
+<div class="col-md-6 mb-4">
+  <div class="card bg-dark text-white">
+    <div class="card-body">
+      <h5><i class="bi bi-bar-chart-line me-2"></i>Open vs Closed</h5>
+      <p class="fs-4">{{ open_trades }} open / {{ closed_trades }} closed</p>
     </div>
   </div>
+</div>
+
 </div>
 
 
