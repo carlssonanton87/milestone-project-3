@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Avg, Count, Q
 from datetime import timedelta, date
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 
 from .models import Trade
 from .forms import TradeForm
@@ -11,6 +13,20 @@ def landing_redirect(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
     return render(request, "trades/landing.html")
+
+
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})
+
 
 @login_required
 def dashboard(request):

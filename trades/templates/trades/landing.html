@@ -1,12 +1,46 @@
-{% extends "trades/base.html" %}
+{% extends 'trades/base.html' %}
 {% block content %}
-<div class="text-center py-5">
-  <h1 class="display-4 mb-3">Welcome to TradeTracker</h1>
-  <p class="lead mb-4">Track your trades, measure performance, and optimize your strategy — all in one place.</p>
 
-  <div class="d-flex justify-content-center gap-3 flex-wrap">
-    <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
-    <a href="{% url 'signup' %}" class="btn btn-outline-secondary btn-lg">Sign Up</a>
+<div class="text-center py-5">
+  <h1 class="display-4">📊 TradeTracker</h1>
+  <p class="lead">Your personal trading journal — track, analyze, and improve your trading performance.</p>
+  <div class="mt-4">
+    <a href="{% url 'signup' %}" class="btn btn-primary btn-lg me-2">Get Started</a>
+    <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg">Login</a>
   </div>
 </div>
+
+<div class="container my-5">
+  <div class="row text-center">
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">📘 Log Your Trades</h5>
+          <p class="card-text">Easily add and edit your trades with performance data like return %, holding time, and outcome.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">📊 View Your Stats</h5>
+          <p class="card-text">Get an overview of your win rate, average return, and holding time — updated in real time.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">📅 Filter By Date</h5>
+          <p class="card-text">Use preset ranges or a custom slider to drill into performance over time.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="text-center text-muted py-4">
+  <p>Ready to take control of your trading? <a href="{% url 'signup' %}">Sign up now</a> – it’s free.</p>
+</footer>
+
 {% endblock %}
