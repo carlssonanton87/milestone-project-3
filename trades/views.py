@@ -5,6 +5,9 @@ from django.db.models import Avg, Count, Q
 from datetime import timedelta, date
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth import logout
+from django.contrib import messages
+from django.shortcuts import redirect
 
 from .models import Trade
 from .forms import TradeForm
@@ -16,6 +19,13 @@ def landing_redirect(request):
 
 def trigger_error(request):
     division_by_zero = 1 / 0
+
+
+
+def custom_logout(request):
+    logout(request)
+    messages.info(request, "You have been logged out.")
+    return redirect('landing')
 
 
 def signup_view(request):
