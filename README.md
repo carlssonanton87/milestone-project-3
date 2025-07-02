@@ -16,6 +16,8 @@
   - Preset buttons (Today, Last Week, etc.)
   - Interactive date slider (instant filtering)
 - Responsive Bootstrap layout
+- Custom 404 and 500 error pages for user-friendly error handling
+
 
 ## User Stories
 
@@ -52,6 +54,16 @@ Methods:
 ## Testing
 
 We have included all the testing details in a separate document → [TESTING.md](TESTING.md).
+
+## Error Handling
+
+TradeTracker includes custom error pages for a polished user experience:
+
+- **404 – Page Not Found**: Displayed when a user visits an invalid URL.
+- **500 – Server Error**: Displayed when something goes wrong on the server side.
+
+To view these, set `DEBUG = False` in `settings.py` and visit a broken link or trigger an exception.
+
 
 
 ## Deployment
