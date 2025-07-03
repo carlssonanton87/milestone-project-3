@@ -1,5 +1,6 @@
 
-
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field, Submit
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import Trade
@@ -21,6 +22,47 @@ class TradeForm(forms.ModelForm):
             'entry_date': forms.DateInput(attrs={'type': 'date'}),
             'exit_date':  forms.DateInput(attrs={'type': 'date'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Initialize Crispy helper
+        self.helper = FormHelper(self)
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('instrument',
+                  css_class='form-control',
+                  aria_required="true",
+                  placeholder="e.g. AAPL"),
+            Field('position_size',
+                  css_class='form-control',
+                  type="number",
+                  step="0.01",
+                  aria_required="true"),
+            Field('entry_price',
+                  css_class='form-control',
+                  type="number",
+                  step="0.01",
+                  aria_required="true"),
+            Field('exit_price',
+                  css_class='form-control',
+                  type="number",
+                  step="0.01"),
+            Field('entry_date',
+                  css_class='form-control',
+                  type="date",
+                  aria_required="true"),
+            Field('exit_date',
+                  css_class='form-control',
+                  type="date"),
+            Field('outcome',
+                  css_class='form-select',
+                  aria_required="true"),
+            Field('notes',
+                  css_class='form-control',
+                  rows="3"),
+            Submit('submit', 'Save Trade', css_class='btn btn-primary mt-2'),
+        )
 
     def clean_position_size(self):
         size = self.cleaned_data.get('position_size')
