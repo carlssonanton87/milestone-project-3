@@ -1,5 +1,11 @@
 {% extends 'trades/base.html' %}
 {% block content %}
+<!-- Loading Spinner (Hidden by Default) -->
+<div id="loading-spinner" class="text-center my-4 d-none">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
 
 <h2 class="mb-4">Trading Dashboard</h2>
 
@@ -238,8 +244,23 @@ if (params.get('range') === 'all') {
     const params = new URLSearchParams(window.location.search);
     params.set('start', start);
     params.set('end', end);
+
+ // Show loading spinner before reload
+    document.getElementById('loading-spinner').classList.remove('d-none');
+
     window.location.search = params.toString();
   });
 });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Show spinner on preset button click
+    const presetButtons = document.querySelectorAll('.btn-outline-secondary, .btn-outline-dark');
+    presetButtons.forEach(btn => {
+      btn.addEventListener('click', function () {
+        document.getElementById('loading-spinner').classList.remove('d-none');
+      });
+    });
+  });
 </script>
 {% endblock %}
