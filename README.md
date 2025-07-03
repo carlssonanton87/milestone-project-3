@@ -5,6 +5,7 @@
 ## Features
 
 - User authentication (registration, login, logout)
+- Landing page with app description
 - Add/Edit/Delete trades with form validation
 - Dashboard with:
   - Total trades
@@ -19,7 +20,19 @@
 - Custom 404 and 500 error pages for user-friendly error handling
 
 
-## User Stories
+## UX
+
+### Flash Messages
+TradeTracker uses Django’s messages framework, rendered as non-blocking **Bootstrap toasts** with the following characteristics:
+
+- **Location:** Toasts appear stacked at the top-right corner of every page (`.toast-container` in `base.html`).
+- **ARIA live region:** Wrapped with `role="status"`, `aria-live="polite"` and `aria-atomic="true"` so screen-readers announce them immediately.
+- **Auto-dismiss:** Success toasts auto-close after 4 seconds via a small initialization script.
+- **Undo support:** Delete actions include an **Undo** link in the toast, which restores the most recently deleted trade.
+- **Customization:** All styling and behavior is defined in `templates/trades/base.html` and can be adjusted there.
+
+
+### User Stories
 
 - As a trader, I want to log each trade with key details (entry/exit date, return %, etc.)
 - As a user, I want to filter trades by time period
