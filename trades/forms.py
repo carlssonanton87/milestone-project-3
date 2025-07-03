@@ -1,13 +1,56 @@
+
+
 from django import forms
+from django.core.exceptions import ValidationError
 from .models import Trade
 
 class TradeForm(forms.ModelForm):
     class Meta:
         model = Trade
-        exclude = ['user']  # We'll set the user manually in the view
+        fields = [
+            'instrument',
+            'position_size',
+            'entry_price',
+            'exit_price',
+            'entry_date',
+            'exit_date',
+            'outcome',
+            'notes',
+        ]
         widgets = {
             'entry_date': forms.DateInput(attrs={'type': 'date'}),
-            'exit_date': forms.DateInput(attrs={'type': 'date'}),
+            'exit_date':  forms.DateInput(attrs={'type': 'date'}),
         }
 
-    # Optional: Custom validation or formatting can go here later
+    def clean_position_size(self):
+        size = self.cleaned_data.get('position_size')
+        if size is not None and size <= 0:
+            raise ValidationError("Position size must be greater than zero.")
+        return size
+
+    def clean_entry_price(self):
+        price = self.cleaned_data.get('entry_price')
+        if price is not None and price <= 0:
+            raise ValidationError("Entry price must be greater than zero.")
+        return price
+
+    def clean_exit_price(self):
+        price = self.cleaned_data.get('exit_price')
+        # exit_price is optional, only validate if provided
+        if price is not None and price < 0:
+            raise ValidationError("Exit price cannot be negative.")
+        return price
+
+    def clean(self):
+        cleaned = super().clean()
+        entry = cleaned.get('entry_date')
+        exit_ = cleaned.get('exit_date')
+
+        # If exit_date provided, it must not be before entry_date
+        if entry and exit_:
+            if exit_ < entry:
+                raise ValidationError({
+                    'exit_date': "Exit date cannot be earlier than entry date."
+                })
+
+        return cleaned
