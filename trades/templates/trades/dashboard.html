@@ -240,12 +240,13 @@ if (params.get('range') === 'all') {
     const start = values[0];
     const end = values[1];
 
-    startLabel.textContent = new Date(start).toISOString().split('T')[0];
-    endLabel.textContent = new Date(end).toISOString().split('T')[0];
+    // startLabel.textContent = new Date(start).toISOString().split('T')[0];
+    // endLabel.textContent = new Date(end).toISOString().split('T')[0];
 
     const params = new URLSearchParams(window.location.search);
     params.set('start', start);
     params.set('end', end);
+    params.set('range', 'custom'); 
 
  // Show loading spinner before reload
     document.getElementById('loading-spinner').classList.remove('d-none');

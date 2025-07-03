@@ -48,53 +48,51 @@ def dashboard(request):
     """
     Displays trading stats, optionally filtered by date presets.
     """
-    range_filter = request.GET.get('range')
-    start = request.GET.get('start')
-    end = request.GET.get('end')
+    range_filter = request.GET.get('range', '')
+    start_param = request.GET.get('start')
+    end_param = request.GET.get('end')
     today = date.today()
 
-# If no filters are provided, default to "last 7 days"
-    if not range_filter and not (start and end):
-        default_start = today - timedelta(days=6)
-        default_end = today
-        trades = Trade.objects.filter(
-            user=request.user,
-            entry_date__range=(default_start, default_end)
-        )
-        range_filter = 'last_7_days'
+    trades = Trade.objects.filter(user=request.user)
+
+    # 🔹 Priority: Use slider custom date range if both present
+    if start_param and end_param:
+        try:
+            start_date = date.fromisoformat(start_param)
+            end_date = date.fromisoformat(end_param)
+            trades = trades.filter(entry_date__range=(start_date, end_date))
+            range_filter = 'custom'
+        except ValueError:
+            pass
+
+    # 🔹 If no slider but preset selected
+    elif range_filter:
+        if range_filter == 'today':
+            trades = trades.filter(entry_date=today)
+        elif range_filter == 'yesterday':
+            trades = trades.filter(entry_date=today - timedelta(days=1))
+        elif range_filter == 'this_week':
+            start = today - timedelta(days=today.weekday())
+            trades = trades.filter(entry_date__gte=start)
+        elif range_filter == 'last_week':
+            start = today - timedelta(days=today.weekday() + 7)
+            end = start + timedelta(days=6)
+            trades = trades.filter(entry_date__range=(start, end))
+        elif range_filter == 'this_month':
+            trades = trades.filter(entry_date__month=today.month, entry_date__year=today.year)
+        elif range_filter == 'last_month':
+            last_month = today.replace(day=1) - timedelta(days=1)
+            trades = trades.filter(entry_date__month=last_month.month, entry_date__year=last_month.year)
+        elif range_filter == 'this_year':
+            trades = trades.filter(entry_date__year=today.year)
+
+    # 🔹 Default fallback — last 7 days
     else:
-        trades = Trade.objects.filter(user=request.user)
+        default_start = today - timedelta(days=6)
+        trades = trades.filter(entry_date__range=(default_start, today))
+        range_filter = 'last_7_days'
+                
 
-    # Apply filter presets
-    if range_filter == 'today':
-        trades = trades.filter(entry_date=today)
-    elif range_filter == 'yesterday':
-        trades = trades.filter(entry_date=today - timedelta(days=1))
-    elif range_filter == 'this_week':
-        start = today - timedelta(days=today.weekday())
-        trades = trades.filter(entry_date__gte=start)
-    elif range_filter == 'last_week':
-        start = today - timedelta(days=today.weekday() + 7)
-        end = start + timedelta(days=6)
-        trades = trades.filter(entry_date__range=(start, end))
-    elif range_filter == 'this_month':
-        trades = trades.filter(entry_date__month=today.month, entry_date__year=today.year)
-    elif range_filter == 'last_month':
-        last_month = today.replace(day=1) - timedelta(days=1)
-        trades = trades.filter(entry_date__month=last_month.month, entry_date__year=last_month.year)
-    elif range_filter == 'this_year':
-        trades = trades.filter(entry_date__year=today.year)
-
-    # Optional: date range from slider
-    start = request.GET.get('start')
-    end = request.GET.get('end')
-    if start and end:
-       try:
-           start_date = date.fromisoformat(start)
-           end_date = date.fromisoformat(end)
-           trades = trades.filter(entry_date__range=(start_date, end_date))
-       except ValueError:
-          pass
 
 
     # Stats calculation
