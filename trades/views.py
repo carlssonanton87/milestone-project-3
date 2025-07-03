@@ -12,6 +12,7 @@ from collections import defaultdict
 from django.utils.safestring import mark_safe
 from django.http import HttpResponse
 from .forms import CSVImportForm
+from django.urls import reverse
 
 import csv
 import json
@@ -201,19 +202,69 @@ def edit_trade(request, pk):
     return render(request, 'trades/add_trade.html', {'form': form})
 
 
-@login_required
 def delete_trade(request, pk):
     """
-    Confirms and deletes a user's trade if it exists.
+    Confirms and deletes a user's trade, but keeps its data in session
+    so we can undo if the user clicks the link in the flash message.
     """
     trade = get_object_or_404(Trade, pk=pk, user=request.user)
 
     if request.method == 'POST':
+        # 1) Store the trade’s data in the session
+        request.session['deleted_trade'] = {
+            'instrument': trade.instrument,
+            'position_size': str(trade.position_size),
+            'entry_price': str(trade.entry_price),
+            'exit_price': str(trade.exit_price) if trade.exit_price is not None else '',
+            'entry_date': trade.entry_date.isoformat(),
+            'exit_date': trade.exit_date.isoformat() if trade.exit_date else '',
+            'outcome': trade.outcome,
+            'notes': trade.notes,
+        }
+        # 2) Delete it
         trade.delete()
-        messages.success(request, "Trade deleted successfully.")
+
+        # 3) Build undo URL
+        undo_url = reverse('undo_delete_trade')
+
+        # 4) Flash message with safe HTML link
+        msg = mark_safe(
+            f"Trade deleted. <a href='{undo_url}'>Undo</a>"
+        )
+        messages.success(request, msg)
+
         return redirect('trade_list')
 
     return render(request, 'trades/delete_trade.html', {'trade': trade})
+
+
+@login_required
+def undo_delete_trade(request):
+    """
+    Restores the most recently deleted trade from session (if any).
+    """
+    data = request.session.get('deleted_trade')
+    if data:
+        # Re-create the trade
+        Trade.objects.create(
+            user=request.user,
+            instrument=data['instrument'],
+            position_size=data['position_size'],
+            entry_price=data['entry_price'],
+            exit_price=data['exit_price'] or None,
+            entry_date=data['entry_date'],
+            exit_date=data['exit_date'] or None,
+            outcome=data['outcome'],
+            notes=data['notes'],
+        )
+        # Clear session so we can’t reuse
+        del request.session['deleted_trade']
+
+        messages.success(request, "Deletion undone. Trade has been restored.")
+    else:
+        messages.warning(request, "Nothing to undo.")
+
+    return redirect('trade_list')
 
 
 @login_required
