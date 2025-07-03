@@ -55,6 +55,19 @@ Methods:
 
 We have included all the testing details in a separate document → [TESTING.md](TESTING.md).
 
+## Bugs & Fixes
+
+| Bug                                                                                     | Fix                                                                                     |
+|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| **Missing `crispy_forms`** – startup error: “No module named ‘crispy_forms’”            | Removed `crispy_forms` from `INSTALLED_APPS` (or install `django-crispy-forms` package) |
+| **URL reverse lookup failures** – templates error “Reverse for ‘trade_list’ not found” | Harmonized view names and URL patterns (`trade_list`, etc.) and updated all template links |
+| **Indentation error** – “SyntaxError: ‘return’ outside function”                        | Fixed indentation so each `return` resides inside its corresponding view function       |
+| **Missing form template** – “TemplateDoesNotExist: bootstrap5/uni_form.html”            | Installed/configured `django-bootstrap5` or reverted to default Django form templates   |
+| **Decimal serialization** – “TypeError: Decimal is not JSON serializable”               | Cast `Decimal` values to `float` (or `str`) before passing into JSON/script tags        |
+| **Unbound `context` variable** – “UnboundLocalError: cannot access local variable ‘context’” | Defined the `context = {...}` dictionary before any `context.update()` or `return` calls  |
+|
+
+
 ## Error Handling
 
 TradeTracker includes custom error pages for a polished user experience:
