@@ -145,3 +145,71 @@ class TradeCRUDPermissionTests(TestCase):
         url = reverse('delete_trade', args=[self.trade2.pk])
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 404)
+
+class TradeMessageTests(TestCase):
+    def setUp(self):
+        # Create and log in a test user
+        self.user = User.objects.create_user(username='msguser', password='pass')
+        self.client.login(username='msguser', password='pass')
+
+        # Create a sample trade for edit/delete tests
+        self.trade = Trade.objects.create(
+            user=self.user,
+            instrument='MSG',
+            position_size=1,
+            entry_price=1,
+            entry_date=date(2025,1,1),
+            outcome='open'
+        )
+
+    def _get_messages(self, response):
+        """Helper to extract messages text from the response context"""
+        return [m.message for m in response.context['messages']]
+
+    def test_create_shows_success_message(self):
+        url = reverse('add_trade')
+        data = {
+            'instrument': 'NEW',
+            'position_size': '2.5',
+            'entry_price': '20',
+            'exit_price': '22',
+            'entry_date': '2025-03-01',
+            'exit_date': '2025-03-02',
+            'outcome': 'win',
+            'notes': 'Created via test',
+        }
+        response = self.client.post(url, data, follow=True)
+        msgs = self._get_messages(response)
+        # Should include the create success text
+        self.assertTrue(any("Trade successfully added." in m for m in msgs))
+
+    def test_edit_shows_success_message(self):
+        url = reverse('edit_trade', args=[self.trade.pk])
+        data = {
+            'instrument': 'MSG-EDITED',
+            'position_size': self.trade.position_size,
+            'entry_price': self.trade.entry_price,
+            'exit_price': self.trade.exit_price or '',
+            'entry_date': self.trade.entry_date,
+            'exit_date': self.trade.exit_date or '',
+            'outcome': self.trade.outcome,
+            'notes': 'Edited via test',
+        }
+        response = self.client.post(url, data, follow=True)
+        msgs = self._get_messages(response)
+        self.assertTrue(any("Trade updated successfully." in m for m in msgs))
+
+    def test_delete_shows_success_message(self):
+        url = reverse('delete_trade', args=[self.trade.pk])
+        response = self.client.post(url, follow=True)
+        msgs = self._get_messages(response)
+        # Our delete view flash uses "Trade deleted."
+        self.assertTrue(any("Trade deleted." in m for m in msgs))
+
+    def test_undo_delete_shows_success_message(self):
+        # Delete first
+        self.client.post(reverse('delete_trade', args=[self.trade.pk]), follow=True)
+        # Then undo
+        response = self.client.get(reverse('undo_delete_trade'), follow=True)
+        msgs = self._get_messages(response)
+        self.assertTrue(any("Deletion undone. Trade has been restored." in m for m in msgs))
