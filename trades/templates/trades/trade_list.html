@@ -1,63 +1,109 @@
 {% extends 'trades/base.html' %}
 
+{% block extra_css %}
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"/>
+{% endblock %}
+
 {% block content %}
-<h2>My Trades</h2>
+<h2 class="mb-4">My Trades</h2>
 
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Instrument</th>
-            <th>Entry</th>
-            <th>Exit</th>
-            <th>Result</th>
-            <th>Return %</th>
-            <th>Holding (days)</th>
-            <th>Actions</th>
-        </tr>
-        
-    </thead>
-    <tbody>
-        {% for trade in trades %}
-        <tr>
-            <td>{{ trade.entry_date }}</td>
-            <td>{{ trade.instrument }}</td>
-            <td>{{ trade.entry_price }}</td>
-            <td>{{ trade.exit_price|default:"—" }}</td>
-            <td>{{ trade.outcome|capfirst }}</td>
-            <td>
-                {% if trade.return_percent %}
-                    {{ trade.return_percent|floatformat:2 }}%
-                {% else %}
-                    —
-                {% endif %}
-            </td>
-            <td>
-                {% if trade.holding_days %}
-                    {{ trade.holding_days }}
-                {% else %}
-                    —
-                {% endif %}
-                </td>
-                <td>
+<!-- ─────────── Outcome Filter Buttons ─────────── -->
+<div class="mb-3">
+  <div class="btn-group" role="group" aria-label="Outcome filter">
+    <!-- data-outcome="" clears the filter -->
+    <button type="button"
+            class="btn btn-sm btn-outline-secondary active"
+            data-outcome="">
+      All
+    </button>
+    <button type="button"
+            class="btn btn-sm btn-outline-success"
+            data-outcome="Win">
+      Win
+    </button>
+    <button type="button"
+            class="btn btn-sm btn-outline-warning"
+            data-outcome="Open">
+      Open
+    </button>
+    <button type="button"
+            class="btn btn-sm btn-outline-danger"
+            data-outcome="Loss">
+      Loss
+    </button>
+  </div>
+</div>
 
-                
-                 {% if trade.pk %}
-  <a href="{% url 'edit_trade' trade.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
-  <a href="{% url 'delete_trade' trade.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
-{% else %}
-  <span class="text-muted">Invalid trade</span>
-{% endif %}
-            </td>
-            
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="7">You haven't logged any trades yet.</td>
-        </tr>
-       
-
-        {% endfor %}
-    </tbody>
+<table id="trades-table" class="table table-striped">
+  <thead>
+    <tr>
+      <th>Instrument</th>
+      <th class="text-end">Size</th>
+      <th class="text-end">Entry Price</th>
+      <th class="text-end">Exit Price</th>
+      <th>Entry Date</th>
+      <th>Exit Date</th>
+      <th>Outcome</th>
+      <th class="text-end">Return %</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for trade in trades %}
+    <tr>
+      <td>{{ trade.instrument }}</td>
+      <td class="text-end">{{ trade.position_size }}</td>
+      <td class="text-end">{{ trade.entry_price }}</td>
+      <td class="text-end">{{ trade.exit_price|default:"—" }}</td>
+      <td>{{ trade.entry_date }}</td>
+      <td>{{ trade.exit_date|default:"—" }}</td>
+      <td>{{ trade.outcome|capfirst }}</td>
+      <td class="text-end">
+        {% if trade.return_percent %}
+          {{ trade.return_percent|floatformat:2 }}%
+        {% else %}
+          —
+        {% endif %}
+      </td>
+      <td>
+        <a href="{% url 'edit_trade' trade.pk %}"  class="btn btn-sm btn-outline-secondary">Edit</a>
+        <a href="{% url 'delete_trade' trade.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // initialize the table
+    const table = $('#trades-table').DataTable({
+      pageLength: 10,
+      lengthChange: false,
+      ordering: true,
+      searching: true,
+      columnDefs: [
+        { targets: [1,2,3,7], className: 'dt-body-right' }
+      ]
+    });
+
+    // handle filter button clicks
+    $('.btn-group button').on('click', function() {
+      // read the data-outcome attribute
+      const val = $(this).data('outcome');
+      // apply search on the 7th column (zero-indexed)
+      table.column(6).search(val).draw();
+
+      // update button active classes
+      $('.btn-group button').removeClass('active');
+      $(this).addClass('active');
+    });
+  });
+</script>
 {% endblock %}

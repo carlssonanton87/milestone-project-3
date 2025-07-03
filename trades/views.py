@@ -7,7 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from collections import defaultdict
 from django.utils.safestring import mark_safe
 import json
@@ -149,12 +149,13 @@ def dashboard(request):
 
 @login_required
 def trade_list(request):
-    """
-    Displays a list of all trades for the logged-in user.
-    Sorted by most recent entry date first.
-    """
     trades = Trade.objects.filter(user=request.user).order_by('-entry_date')
-    return render(request, 'trades/trade_list.html', {'trades': trades})
+    # Grab a sorted, distinct list of instruments for the dropdown filter
+    instruments = trades.values_list('instrument', flat=True).distinct().order_by('instrument')
+    return render(request, 'trades/trade_list.html', {
+        'trades': trades,
+        'instruments': instruments,
+    })
 
 
 @login_required

@@ -12,6 +12,8 @@
     <!-- ✅ Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
+    <!-- Allow pages to inject page-specific CSS here -->
+    {% block extra_css %}{% endblock %}
 </head>
 <style>
 
@@ -127,6 +129,9 @@
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Allow pages to inject page-specific JS here -->
+  {% block extra_js %}{% endblock %}
 
 </body>
 </html>
