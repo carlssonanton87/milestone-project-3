@@ -10,6 +10,10 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 from collections import defaultdict
 from django.utils.safestring import mark_safe
+from django.http import HttpResponse
+from .forms import CSVImportForm
+
+import csv
 import json
 
 from .models import Trade
@@ -210,3 +214,63 @@ def delete_trade(request, pk):
         return redirect('trade_list')
 
     return render(request, 'trades/delete_trade.html', {'trade': trade})
+
+
+@login_required
+def export_trades_csv(request):
+    """Download all your trades as a CSV file."""
+    trades = Trade.objects.filter(user=request.user).order_by('entry_date')
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="trades.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow([
+        'instrument','position_size','entry_price','exit_price',
+        'entry_date','exit_date','outcome','notes'
+    ])
+    for t in trades:
+        writer.writerow([
+            t.instrument,
+            t.position_size,
+            t.entry_price,
+            t.exit_price or '',
+            t.entry_date,
+            t.exit_date or '',
+            t.outcome,
+            t.notes or '',
+        ])
+
+    return response
+
+@login_required
+def import_trades_csv(request):
+    """Upload a CSV to create new trades in bulk."""
+    if request.method == 'POST':
+        form = CSVImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = form.cleaned_data['file']
+            decoded = csv_file.read().decode('utf-8').splitlines()
+            reader = csv.DictReader(decoded)
+            count = 0
+            for row in reader:
+                try:
+                    Trade.objects.create(
+                        user=request.user,
+                        instrument=row['instrument'],
+                        position_size=row['position_size'],
+                        entry_price=row['entry_price'],
+                        exit_price=row.get('exit_price') or None,
+                        entry_date=row['entry_date'],
+                        exit_date=row.get('exit_date') or None,
+                        outcome=row['outcome'],
+                        notes=row.get('notes') or ''
+                    )
+                    count += 1
+                except Exception:
+                    continue
+            messages.success(request, f"Imported {count} trades successfully.")
+            return redirect('trade_list')
+    else:
+        form = CSVImportForm()
+
+    return render(request, 'trades/import_trades.html', {'form': form})

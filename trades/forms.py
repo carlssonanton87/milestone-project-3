@@ -54,3 +54,9 @@ class TradeForm(forms.ModelForm):
                 })
 
         return cleaned
+    
+class CSVImportForm(forms.Form):
+    file = forms.FileField(
+        label="Select CSV file",
+        help_text="Columns: instrument,position_size,entry_price,exit_price,entry_date,exit_date,outcome,notes"
+    )

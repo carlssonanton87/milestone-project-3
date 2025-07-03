@@ -9,6 +9,15 @@
 {% block content %}
 <h2 class="mb-4">My Trades</h2>
 
+ <div class="mb-3 d-flex gap-2">
+    <a href="{% url 'export_trades' %}" class="btn btn-sm btn-outline-success">
+      Export CSV
+    </a>
+    <a href="{% url 'import_trades' %}" class="btn btn-sm btn-outline-primary">
+      Import CSV
+    </a>
+  </div>
+
 <!-- ─────────── Outcome Filter Buttons ─────────── -->
 <div class="mb-3">
   <div class="btn-group" role="group" aria-label="Outcome filter">
