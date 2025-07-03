@@ -108,8 +108,14 @@
 {% if chart_labels and chart_returns %}
 
 <div class="card mt-5">
-  <div class="card-body">
+  
+  <div class="card-body position-relative">
     <h5 class="card-title">Return % Over Time</h5>
+    <div class="d-flex justify-content-end mb-2">
+  <button id="toggleChart" class="btn btn-sm btn-outline-primary position-absolute top-0 end-0 m-2">
+    Switch to Bar Chart
+  </button>
+</div>
     <canvas id="returnsChart" height="100"></canvas>
   </div>
 </div>
@@ -121,49 +127,56 @@
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const chartLabels = JSON.parse(document.getElementById('labels-data').textContent);
-  const chartData = JSON.parse(document.getElementById('returns-data').textContent);
+  document.addEventListener('DOMContentLoaded', function () {
+    const labels = JSON.parse(document.getElementById('labels-data').textContent);
+    const data = JSON.parse(document.getElementById('returns-data').textContent);
+    const ctx = document.getElementById('returnsChart').getContext('2d');
 
-  const ctx = document.getElementById('returnsChart');
-  if (!ctx) {
-    console.error("Canvas element #returnsChart not found.");
-    return;
-  }
+    let chartType = 'line';
+    let chart;
 
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: chartLabels,
-      datasets: [{
-        label: 'Return %',
-        data: chartData,
-        borderColor: 'rgba(13,110,253,1)',
-        backgroundColor: 'rgba(13,110,253,0.1)',
-        tension: 0.3,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: false,
-          title: {
-            display: true,
-            text: 'Return %'
-          }
+    function renderChart(type) {
+      if (chart) chart.destroy(); // Clear existing chart
+
+      chart = new Chart(ctx, {
+        type: type,
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Return %',
+            data: data,
+            borderColor: 'rgba(13,110,253,1)',
+            backgroundColor: type === 'bar' ? 'rgba(13,110,253,0.5)' : 'rgba(13,110,253,0.1)',
+            fill: type === 'line',
+            tension: 0.3
+          }]
         },
-        x: {
-          title: {
-            display: true,
-            text: 'Trade Date'
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: false,
+              title: { display: true, text: 'Return %' }
+            },
+            x: {
+              title: { display: true, text: 'Trade Date' }
+            }
           }
         }
-      }
+      });
     }
+
+    // Initial render
+    renderChart(chartType);
+
+    // Toggle Button
+    const toggleBtn = document.getElementById('toggleChart');
+    toggleBtn.addEventListener('click', () => {
+      chartType = chartType === 'line' ? 'bar' : 'line';
+      toggleBtn.textContent = `Switch to ${chartType === 'line' ? 'Bar' : 'Line'} Chart`;
+      renderChart(chartType);
+    });
   });
-});
 </script>
 
 {% endif %}
