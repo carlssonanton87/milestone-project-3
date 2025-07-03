@@ -48,11 +48,22 @@ def dashboard(request):
     """
     Displays trading stats, optionally filtered by date presets.
     """
-    range_filter = request.GET.get('range', 'all')
+    range_filter = request.GET.get('range')
+    start = request.GET.get('start')
+    end = request.GET.get('end')
     today = date.today()
 
-    # Start with all trades
-    trades = Trade.objects.filter(user=request.user)
+# If no filters are provided, default to "last 7 days"
+    if not range_filter and not (start and end):
+        default_start = today - timedelta(days=6)
+        default_end = today
+        trades = Trade.objects.filter(
+            user=request.user,
+            entry_date__range=(default_start, default_end)
+        )
+        range_filter = 'last_7_days'
+    else:
+        trades = Trade.objects.filter(user=request.user)
 
     # Apply filter presets
     if range_filter == 'today':

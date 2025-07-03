@@ -17,6 +17,8 @@
     <div class="d-flex flex-wrap gap-2">
       <a href="?range=today" class="btn btn-outline-secondary btn-sm">Today</a>
       <a href="?range=yesterday" class="btn btn-outline-secondary btn-sm">Yesterday</a>
+      <a href="?range=last_7_days" class="btn btn-outline-secondary btn-sm {% if range_filter == 'last_7_days' %}active{% endif %}">Last 7 Days</a>
+
       <a href="?range=this_week" class="btn btn-outline-secondary btn-sm">This wk.</a>
       <a href="?range=last_week" class="btn btn-outline-secondary btn-sm">Last wk.</a>
       <a href="?range=this_month" class="btn btn-outline-secondary btn-sm">This mo.</a>
