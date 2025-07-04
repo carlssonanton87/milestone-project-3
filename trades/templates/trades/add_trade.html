@@ -1,55 +1,81 @@
 {% extends 'trades/base.html' %}
 {% load crispy_forms_tags %}
+
 {% block content %}
-  <h2>Add New Trade</h2>
+<h2>Add New Trade</h2>
 
-  <form method="post" novalidate>
-    {% csrf_token %}
+<form method="post" novalidate>
+  {% csrf_token %}
 
-    {# Instrument field with ID for jQuery UI #}
-    <div class="mb-3">
-      <label for="id_instrument" class="form-label">Instrument</label>
-      <input
-        type="text"
-        name="instrument"
-        id="id_instrument"
-        class="form-control"
-        placeholder="e.g. AAPL – Apple Inc."
-        value="{{ form.instrument.value|default_if_none:'' }}"
-        required
-      >
-      {% if form.instrument.errors %}
-        <div class="invalid-feedback d-block">
-          {{ form.instrument.errors.0 }}
-        </div>
-      {% endif %}
-    </div>
+  <!-- Instrument field with autocomplete -->
+  <div class="mb-3">
+    <label for="id_instrument" class="form-label">Instrument</label>
+    <input
+      list="instrument-list"
+      class="form-control"
+      id="id_instrument"
+      name="instrument"
+      value="{{ form.instrument.value|default_if_none:'' }}"
+    >
+    <datalist id="instrument-list"></datalist>
+  </div>
 
-    {# Render the rest via crispy #}
-    {{ form|crispy|slice:"1:" }}  {# skip the first field (instrument) #}
+  {# Render the rest of the form with Crispy #}
+  {{ form.position_size|as_crispy_field }}
+  {{ form.entry_price|as_crispy_field }}
+  {{ form.exit_price|as_crispy_field }}
+  {{ form.entry_date|as_crispy_field }}
+  {{ form.exit_date|as_crispy_field }}
+  {{ form.outcome|as_crispy_field }}
+  {{ form.notes|as_crispy_field }}
 
-    <button type="submit" class="btn btn-primary mt-2">Save Trade</button>
-  </form>
-
+  <button type="submit" class="btn btn-primary mt-2">Save Trade</button>
   <script>
   $(function(){
-    $('#id_instrument').autocomplete({
+    $('#instrument-field').autocomplete({
       source(request, response) {
         $.ajax({
           url: "{% url 'instrument_search' %}",
-          data: { term: request.term },
+          data: { q: request.term },
           success(data) {
-            // map to “SYMBOL — Name”
-            response(data.map(item => ({
-              label: `${item.symbol} — ${item.name}`,
-              value: item.symbol
-            })));
+            response(data);
           }
         });
       },
       minLength: 2,
-      delay: 300
+      delay: 300,
+      select(event, ui) {
+        $('#instrument-field').val(ui.item.value);
+      }
     });
   });
-  </script>
+</script>
+</form>
+
+<script>
+// Autocomplete wiring
+document.addEventListener('DOMContentLoaded', function(){
+  const inp = document.getElementById('id_instrument');
+  const dl  = document.getElementById('instrument-list');
+
+  inp.addEventListener('input', async function(){
+    const q = this.value.trim();
+    if(q.length < 2) return;  // wait for 2+ chars
+
+    try {
+      const res = await fetch("{% url 'instrument_search' %}?q=" + encodeURIComponent(q));
+      if(!res.ok) throw new Error(res.statusText);
+      const symbols = await res.json();
+      dl.innerHTML = '';
+      symbols.forEach(sym => {
+        const opt = document.createElement('option');
+        opt.value = sym;
+        dl.appendChild(opt);
+      });
+    } catch(err) {
+      console.warn('Instrument lookup failed:', err);
+    }
+  });
+});
+</script>
 {% endblock %}
