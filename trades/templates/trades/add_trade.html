@@ -7,14 +7,18 @@
 <form method="post" novalidate>
   {% csrf_token %}
 
-  <!-- Instrument field with autocomplete -->
+  <!-- Instrument field with native datalist autocomplete -->
   <div class="mb-3">
     <label for="id_instrument" class="form-label">Instrument</label>
     <input
-      list="instrument-list"
-      class="form-control"
+      type="text"
       id="id_instrument"
       name="instrument"
+      list="instrument-list"
+      class="form-control"
+      placeholder="Start typing ticker…"
+      autocomplete="off"
+      required
       value="{{ form.instrument.value|default_if_none:'' }}"
     >
     <datalist id="instrument-list"></datalist>
@@ -22,57 +26,52 @@
 
   {# Render the rest of the form with Crispy #}
   {{ form.position_size|as_crispy_field }}
-  {{ form.entry_price|as_crispy_field }}
-  {{ form.exit_price|as_crispy_field }}
-  {{ form.entry_date|as_crispy_field }}
-  {{ form.exit_date|as_crispy_field }}
-  {{ form.outcome|as_crispy_field }}
-  {{ form.notes|as_crispy_field }}
+  {{ form.entry_price    |as_crispy_field }}
+  {{ form.exit_price     |as_crispy_field }}
+  {{ form.entry_date     |as_crispy_field }}
+  {{ form.exit_date      |as_crispy_field }}
+  {{ form.outcome        |as_crispy_field }}
+  {{ form.notes          |as_crispy_field }}
 
   <button type="submit" class="btn btn-primary mt-2">Save Trade</button>
-  <script>
-  $(function(){
-    $('#instrument-field').autocomplete({
-      source(request, response) {
-        $.ajax({
-          url: "{% url 'instrument_search' %}",
-          data: { q: request.term },
-          success(data) {
-            response(data);
-          }
-        });
-      },
-      minLength: 2,
-      delay: 300,
-      select(event, ui) {
-        $('#instrument-field').val(ui.item.value);
-      }
-    });
-  });
-</script>
 </form>
+{% endblock %}
 
+{% block extra_js %}
 <script>
-// Autocomplete wiring
-document.addEventListener('DOMContentLoaded', function(){
-  const inp = document.getElementById('id_instrument');
-  const dl  = document.getElementById('instrument-list');
+document.addEventListener('DOMContentLoaded', function() {
+  const input    = document.getElementById('id_instrument');
+  const datalist = document.getElementById('instrument-list');
 
-  inp.addEventListener('input', async function(){
+  input.addEventListener('input', async function() {
     const q = this.value.trim();
-    if(q.length < 2) return;  // wait for 2+ chars
+    if (q.length < 2) {
+      datalist.innerHTML = '';
+      console.log('Too short, cleared datalist');
+      return;
+    }
 
     try {
-      const res = await fetch("{% url 'instrument_search' %}?q=" + encodeURIComponent(q));
-      if(!res.ok) throw new Error(res.statusText);
-      const symbols = await res.json();
-      dl.innerHTML = '';
-      symbols.forEach(sym => {
+      const url = "{% url 'instrument_search' %}?q=" + encodeURIComponent(q);
+      console.log('Fetching →', url);
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
+
+      const suggestions = await res.json();  // [{label,value}, …]
+      console.log('Fetched suggestions:', suggestions.length, suggestions);
+
+      // clear previous
+      datalist.innerHTML = '';
+
+      // use label in the value so you see the full "SYM – Name" in dropdown
+      suggestions.forEach(item => {
         const opt = document.createElement('option');
-        opt.value = sym;
-        dl.appendChild(opt);
+        opt.value = item.label;
+        datalist.appendChild(opt);
       });
-    } catch(err) {
+
+      console.log('Datalist now has', datalist.options.length, 'options');
+    } catch (err) {
       console.warn('Instrument lookup failed:', err);
     }
   });

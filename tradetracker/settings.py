@@ -12,15 +12,16 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+print("Loaded API key:", os.getenv("INSTRUMENT_API_KEY"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # 1. load the .env file into os.environ
-load_dotenv(BASE_DIR / '.env')
+load_dotenv()   
 
 # 2. read key safely
-ALPHA_VANTAGE_API_KEY = os.getenv('ALPHA_VANTAGE_API_KEY')
+INSTRUMENT_API_KEY = os.getenv("INSTRUMENT_API_KEY")
 
 
 # Quick-start development settings - unsuitable for production

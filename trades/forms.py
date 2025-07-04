@@ -19,8 +19,20 @@ class TradeForm(forms.ModelForm):
             'notes',
         ]
         widgets = {
-            'entry_date': forms.DateInput(attrs={'type': 'date'}),
-            'exit_date':  forms.DateInput(attrs={'type': 'date'}),
+            # give our instrument field an ID for the autocomplete hook:
+            'instrument': forms.TextInput(attrs={
+                'id': 'instrument-field',
+                'autocomplete': 'off',
+                'class': 'form-control',
+            }),
+            # bootstrap‐style on the rest:
+            'entry_date': forms.DateInput(attrs={'type':'date','class':'form-control'}),
+            'exit_date':  forms.DateInput(attrs={'type':'date','class':'form-control'}),
+            'position_size': forms.NumberInput(attrs={'class':'form-control'}),
+            'entry_price':   forms.NumberInput(attrs={'class':'form-control'}),
+            'exit_price':    forms.NumberInput(attrs={'class':'form-control'}),
+            'outcome':       forms.Select(attrs={'class':'form-select'}),
+            'notes':         forms.Textarea(attrs={'class':'form-control','rows':3}),
         }
 
     def __init__(self, *args, **kwargs):

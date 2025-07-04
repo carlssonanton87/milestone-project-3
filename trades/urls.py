@@ -14,6 +14,6 @@ urlpatterns = [
     path('error/', views.trigger_error),
     path('trades/export/', views.export_trades_csv, name='export_trades'),
     path('trades/import/', views.import_trades_csv, name='import_trades'),
-    path('api/instruments/', instrument_search, name='instrument_search'),
+    path('api/instruments/', views.instrument_search, name='instrument_search'),
 
 ]
