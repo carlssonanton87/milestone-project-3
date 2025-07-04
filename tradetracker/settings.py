@@ -9,9 +9,8 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
-from pathlib import Path
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,7 +31,8 @@ SECRET_KEY = "django-insecure-x1l%hg@nf5zzi-egbw)-4g-3t#u_zll1-dc2bi47)=$y4v*gsl
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  
-ALLOWED_HOSTS = ['*']   
+# pull from env, but default to localhost/127.0.0.1 if unset
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
 

@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import instrument_search
 from django.views.generic import TemplateView
 
 urlpatterns = [

@@ -10,12 +10,16 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 from collections import defaultdict
 from django.utils.safestring import mark_safe
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .forms import CSVImportForm
 from django.urls import reverse
+from django.conf import settings
+
 
 import csv
 import json
+import requests
+
 
 from .models import Trade
 from .forms import TradeForm
