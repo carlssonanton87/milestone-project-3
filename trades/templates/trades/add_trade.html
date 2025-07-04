@@ -1,12 +1,55 @@
 {% extends 'trades/base.html' %}
 {% load crispy_forms_tags %}
-
 {% block content %}
-<h2>Add New Trade</h2>
+  <h2>Add New Trade</h2>
 
-<form method="post" novalidate>
+  <form method="post" novalidate>
     {% csrf_token %}
-    {{ form|crispy }}
+
+    {# Instrument field with ID for jQuery UI #}
+    <div class="mb-3">
+      <label for="id_instrument" class="form-label">Instrument</label>
+      <input
+        type="text"
+        name="instrument"
+        id="id_instrument"
+        class="form-control"
+        placeholder="e.g. AAPL – Apple Inc."
+        value="{{ form.instrument.value|default_if_none:'' }}"
+        required
+      >
+      {% if form.instrument.errors %}
+        <div class="invalid-feedback d-block">
+          {{ form.instrument.errors.0 }}
+        </div>
+      {% endif %}
+    </div>
+
+    {# Render the rest via crispy #}
+    {{ form|crispy|slice:"1:" }}  {# skip the first field (instrument) #}
+
     <button type="submit" class="btn btn-primary mt-2">Save Trade</button>
-</form>
+  </form>
+
+  <script>
+  $(function(){
+    $('#id_instrument').autocomplete({
+      source(request, response) {
+        $.ajax({
+          url: "{% url 'instrument_search' %}",
+          data: { term: request.term },
+          success(data) {
+            // map to “SYMBOL — Name”
+            response(data.map(item => ({
+              label: `${item.symbol} — ${item.name}`,
+              value: item.symbol
+            })));
+          }
+        });
+      },
+      minLength: 2,
+      delay: 300
+    });
+  });
+  </script>
 {% endblock %}

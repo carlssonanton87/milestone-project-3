@@ -20,6 +20,32 @@ import json
 from .models import Trade
 from .forms import TradeForm
 
+def instrument_search(request):
+    """
+    Returns JSON list of { symbol, name } matching ?term=…
+    """
+    term = request.GET.get('term','').strip()
+    if not term:
+        return JsonResponse([], safe=False)
+
+    resp = requests.get(
+        'https://www.alphavantage.co/query',
+        params={
+            'function': 'SYMBOL_SEARCH',
+            'keywords': term,
+            'apikey': settings.ALPHA_VANTAGE_API_KEY
+        },
+        timeout=5
+    )
+    data = resp.json().get('bestMatches', [])
+    suggestions = []
+    for m in data:
+        suggestions.append({
+            'symbol': m.get('1. symbol'),
+            'name':   m.get('2. name')
+        })
+    return JsonResponse(suggestions, safe=False)
+
 def landing_redirect(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
