@@ -180,6 +180,35 @@ def dashboard(request):
     holding_days   = [t.holding_days() for t in trades if t.holding_days() is not None]
     avg_holding    = sum(holding_days) / len(holding_days) if holding_days else 0
 
+ # ─── New Metrics ───────────────────────────────────
+
+    # 1) Average Win Hold (avg holding_days of only 'win' trades)
+    win_trades = trades.filter(outcome='win').exclude(exit_date__isnull=True)
+    if win_trades:
+        avg_win_hold = sum(t.holding_days() for t in win_trades) / win_trades.count()
+    else:
+        avg_win_hold = 0
+
+    # 2) Win Streak (longest consecutive sequence of 'win' outcomes in date order)
+    sorted_trades = trades.order_by('entry_date')
+    max_streak = curr_streak = 0
+    for t in sorted_trades:
+        if t.outcome == 'win':
+            curr_streak += 1
+            max_streak = max(max_streak, curr_streak)
+        else:
+            curr_streak = 0
+
+    # 3) Top Win $ (largest gross profit: (exit_price - entry_price) * position_size)
+    profits = [
+        float((t.exit_price - t.entry_price) * t.position_size)
+        for t in win_trades
+        if t.exit_price is not None
+    ]
+    top_win = max(profits) if profits else 0
+
+    # ────────────────────────────────────────────────────
+
     # --- Chart data --- (exclude open trades)
     chart_data = defaultdict(list)
     for t in trades.exclude(outcome='open').order_by('entry_date'):
@@ -200,6 +229,9 @@ def dashboard(request):
         'win_rate':         round(win_rate, 2),
         'avg_return':       round(avg_return, 2),
         'avg_holding':      round(avg_holding, 2),
+        'avg_win_hold':    round(avg_win_hold, 1),
+        'win_streak':      max_streak,
+        'top_win':         round(top_win, 2),
         'range_filter':     range_filter,
         'chart_labels':     chart_labels,
         'chart_returns':    chart_returns,
