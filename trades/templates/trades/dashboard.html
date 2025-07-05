@@ -59,58 +59,128 @@
 
 
 
-<div class="row text-center">
-  <!-- Total Trades -->
-<div class="col-md-4 mb-4">
-  <div class="card bg-primary text-white">
-    <div class="card-body">
-      <h5><i class="bi bi-clipboard-data me-2"></i>Total Trades</h5>
-      <p class="fs-4">{{ total_trades }}</p>
+  <!-- 📊 All Metrics: 4 per row on md+ -->
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 text-center mb-4">
+    <!-- Total Trades -->
+    <div class="col">
+      <div class="card h-100 bg-primary text-white">
+        <div class="card-body">
+          <h6>
+            <i class="bi bi-clipboard-data me-1"></i>
+            Total Trades
+            <i class="bi bi-info-circle ms-1" data-bs-toggle="tooltip"
+               title="Total number of trades in this period"></i>
+          </h6>
+          <p class="fs-5">{{ total_trades }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Win Rate -->
+    <div class="col">
+      <div class="card h-100 bg-success text-white">
+        <div class="card-body">
+          <h6>
+            <i class="bi bi-trophy me-1"></i>
+            Win Rate
+            <i class="bi bi-info-circle ms-1" data-bs-toggle="tooltip"
+               title="Percent of closed trades that were winners"></i>
+          </h6>
+          <p class="fs-5">{{ win_rate }}%</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Average Return -->
+    <div class="col">
+      <div class="card h-100 bg-warning text-dark">
+        <div class="card-body">
+          <h6>
+            <i class="bi bi-graph-up-arrow me-1"></i>
+            Avg Return
+            <i class="bi bi-info-circle ms-1" data-bs-toggle="tooltip"
+               title="Average percentage gain/loss per trade"></i>
+          </h6>
+          <p class="fs-5">{{ avg_return }}%</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Average Holding Time -->
+    <div class="col">
+      <div class="card h-100 bg-info text-dark">
+        <div class="card-body">
+          <h6>
+            <i class="bi bi-clock-history me-1"></i>
+            Avg Hold Time
+            <i class="bi bi-info-circle ms-1" data-bs-toggle="tooltip"
+               title="Average days holding each trade"></i>
+          </h6>
+          <p class="fs-5">{{ avg_holding }} days</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Average Win Hold -->
+    <div class="col">
+      <div class="card h-100 bg-secondary text-white">
+        <div class="card-body">
+          <h6>
+            <i class="bi bi-clock-fill me-1"></i>
+            Avg Win Hold
+            <i class="bi bi-info-circle ms-1" data-bs-toggle="tooltip"
+               title="Average hold time only for winning trades"></i>
+          </h6>
+          <p class="fs-5">{{ avg_win_hold }} days</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Win Streak -->
+    <div class="col">
+      <div class="card h-100 bg-dark text-white">
+        <div class="card-body">
+          <h6>
+            <i class="bi bi-arrow-bar-up me-1"></i>
+            Win Streak
+            <i class="bi bi-info-circle ms-1" data-bs-toggle="tooltip"
+               title="Longest run of consecutive wins"></i>
+          </h6>
+          <p class="fs-5">{{ win_streak }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Win $ -->
+    <div class="col">
+      <div class="card h-100 bg-success text-white">
+        <div class="card-body">
+          <h6>
+            <i class="bi bi-cash-stack me-1"></i>
+            Top Win $
+            <i class="bi bi-info-circle ms-1" data-bs-toggle="tooltip"
+               title="Largest profit in dollars on a single trade"></i>
+          </h6>
+          <p class="fs-5">${{ top_win }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Open vs Closed -->
+    <div class="col">
+      <div class="card h-100 bg-dark text-white">
+        <div class="card-body">
+          <h6>
+            <i class="bi bi-bar-chart-line me-1"></i>
+            Open vs Closed
+            <i class="bi bi-info-circle ms-1" data-bs-toggle="tooltip"
+               title="Number of currently open trades vs closed trades"></i>
+          </h6>
+          <p class="fs-5">{{ open_trades }} open / {{ closed_trades }} closed</p>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
-<!-- Win Rate -->
-<div class="col-md-4 mb-4">
-  <div class="card bg-success text-white">
-    <div class="card-body">
-      <h5><i class="bi bi-trophy me-2"></i>Win Rate</h5>
-      <p class="fs-4">{{ win_rate }}%</p>
-    </div>
-  </div>
-</div>
-
-<!-- Average Return -->
-<div class="col-md-4 mb-4">
-  <div class="card bg-warning text-dark">
-    <div class="card-body">
-      <h5><i class="bi bi-graph-up-arrow me-2"></i>Average Return</h5>
-      <p class="fs-4">{{ avg_return }}%</p>
-    </div>
-  </div>
-</div>
-
-<!-- Average Holding Time -->
-<div class="col-md-6 mb-4">
-  <div class="card bg-info text-dark">
-    <div class="card-body">
-      <h5><i class="bi bi-clock-history me-2"></i>Average Holding Time</h5>
-      <p class="fs-4">{{ avg_holding }} days</p>
-    </div>
-  </div>
-</div>
-
-<!-- Open vs Closed -->
-<div class="col-md-6 mb-4">
-  <div class="card bg-dark text-white">
-    <div class="card-body">
-      <h5><i class="bi bi-bar-chart-line me-2"></i>Open vs Closed</h5>
-      <p class="fs-4">{{ open_trades }} open / {{ closed_trades }} closed</p>
-    </div>
-  </div>
-</div>
-</div>
-
 
 <!-- Return % over time chart -->
 {% if chart_labels and chart_returns %}
@@ -127,6 +197,8 @@
     <canvas id="returnsChart" height="100"></canvas>
   </div>
 </div>
+
+
 
 
 {{ chart_labels_json|json_script:"labels-data" }}
@@ -266,4 +338,19 @@ if (params.get('range') === 'all') {
     });
   });
 </script>
+{% endblock %}
+
+{% block extra_js %}
+  {{ block.super }}
+  <script>
+    // Initialize all Bootstrap tooltips on this page
+    document.addEventListener('DOMContentLoaded', function () {
+      var tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
+      tooltipTriggerList.forEach(function (el) {
+        new bootstrap.Tooltip(el);
+      });
+    });
+  </script>
 {% endblock %}
