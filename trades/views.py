@@ -7,6 +7,7 @@ from collections import defaultdict
 from django.shortcuts                import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth            import login, logout
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms      import UserCreationForm
 from django.conf                     import settings       # ← must come before using settings
 from django.contrib                  import messages
@@ -22,6 +23,39 @@ def trigger_error(request):
     # this intentionally raises a ZeroDivisionError so you can test Sentry/etc
     division_by_zero = 1 / 0
 
+
+@login_required
+def account_view(request):
+    """
+    My Account page:
+     - Link to change password
+     - Button to delete all trades
+     - Button to delete the user account
+    """
+    return render(request, 'trades/account.html')
+
+
+@login_required
+def delete_all_trades(request):
+    if request.method == 'POST':
+        # Delete every trade belonging to the user
+        Trade.objects.filter(user=request.user).delete()
+        messages.success(request, "All your trades have been deleted.")
+    return redirect('account')
+
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        # First, delete all trades
+        Trade.objects.filter(user=request.user).delete()
+        # Then, log out & delete the user
+        user = request.user
+        auth_logout(request)
+        user.delete()
+        messages.info(request, "Your account and all data have been permanently deleted.")
+        return redirect('landing')  # landing_redirect view
+    return redirect('account')
 
 @login_required
 def instrument_search(request):

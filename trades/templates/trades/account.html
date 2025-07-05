@@ -1,0 +1,33 @@
+{% extends 'trades/base.html' %}
+{% block content %}
+  <h2>My Account</h2>
+
+  <!-- Change Password -->
+  <div class="mb-4">
+    <a href="{% url 'password_change' %}" class="btn btn-outline-primary">
+      Change Password
+    </a>
+  </div>
+
+  <!-- Delete All Trades -->
+  <div class="mb-4">
+    <form method="post" action="{% url 'delete_all_trades' %}"
+          onsubmit="return confirm('Are you sure you want to delete ALL your trades?');">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-warning">
+        Delete All Trades
+      </button>
+    </form>
+  </div>
+
+  <!-- Delete Account -->
+  <div class="mb-4">
+    <form method="post" action="{% url 'delete_account' %}"
+          onsubmit="return confirm('This will permanently delete your account AND all data. Continue?');">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">
+        Delete My Account
+      </button>
+    </form>
+  </div>
+{% endblock %}

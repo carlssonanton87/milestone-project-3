@@ -22,4 +22,7 @@ urlpatterns = [
     path('api/instruments/', views.instrument_search, name='instrument_search'),
     # Sentry/test error
     path('error/', views.trigger_error, name='trigger_error'),
+    path('account/', views.account_view, name='account'),
+    path('account/delete_trades/', views.delete_all_trades, name='delete_all_trades'),
+    path('account/delete_account/', views.delete_account, name='delete_account'),
 ]
