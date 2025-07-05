@@ -17,62 +17,54 @@
       list="instrument-list"
       class="form-control"
       placeholder="Start typing ticker…"
-      autocomplete="off"
-      required
       value="{{ form.instrument.value|default_if_none:'' }}"
+      required
     >
     <datalist id="instrument-list"></datalist>
   </div>
 
   {# Render the rest of the form with Crispy #}
   {{ form.position_size|as_crispy_field }}
-  {{ form.entry_price    |as_crispy_field }}
-  {{ form.exit_price     |as_crispy_field }}
-  {{ form.entry_date     |as_crispy_field }}
-  {{ form.exit_date      |as_crispy_field }}
-  {{ form.outcome        |as_crispy_field }}
-  {{ form.notes          |as_crispy_field }}
+  {{ form.entry_price|as_crispy_field }}
+  {{ form.exit_price|as_crispy_field }}
+  {{ form.entry_date|as_crispy_field }}
+  {{ form.exit_date|as_crispy_field }}
+  {{ form.outcome|as_crispy_field }}
+  {{ form.notes|as_crispy_field }}
 
   <button type="submit" class="btn btn-primary mt-2">Save Trade</button>
 </form>
 {% endblock %}
 
+
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const input    = document.getElementById('id_instrument');
-  const datalist = document.getElementById('instrument-list');
+document.addEventListener('DOMContentLoaded', function(){
+  const inp = document.getElementById('id_instrument');
+  const dl  = document.getElementById('instrument-list');
 
-  input.addEventListener('input', async function() {
+  inp.addEventListener('input', async function(){
     const q = this.value.trim();
-    if (q.length < 2) {
-      datalist.innerHTML = '';
-      console.log('Too short, cleared datalist');
-      return;
-    }
+    if (q.length < 2) return;  // wait for at least 2 characters
 
     try {
-      const url = "{% url 'instrument_search' %}?q=" + encodeURIComponent(q);
-      console.log('Fetching →', url);
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
+      // Note: our view expects 'term' not 'q'
+      const res = await fetch("{% url 'instrument_search' %}?term=" + encodeURIComponent(q));
+      if (!res.ok) throw new Error(res.statusText);
+      const suggestions = await res.json();
 
-      const suggestions = await res.json();  // [{label,value}, …]
-      console.log('Fetched suggestions:', suggestions.length, suggestions);
+      // clear out old options
+      dl.innerHTML = '';
 
-      // clear previous
-      datalist.innerHTML = '';
-
-      // use label in the value so you see the full "SYM – Name" in dropdown
+      // populate new options
       suggestions.forEach(item => {
         const opt = document.createElement('option');
-        opt.value = item.label;
-        datalist.appendChild(opt);
+        opt.value = item.value;      // ticker symbol
+        opt.label = item.label;      // full “SYMBOL – Name” shown in dropdown
+        dl.appendChild(opt);
       });
-
-      console.log('Datalist now has', datalist.options.length, 'options');
     } catch (err) {
-      console.warn('Instrument lookup failed:', err);
+      console.error('Instrument lookup failed:', err);
     }
   });
 });
