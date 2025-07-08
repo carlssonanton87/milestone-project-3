@@ -32,32 +32,89 @@
   {% block extra_css %}{% endblock %}
 
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-    /* sidebar width */
     :root { --sidebar-width: 240px; }
 
-    /* desktop sidebar */
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #e3ebf7;
+    }
+
+    /* Desktop sidebar */
     #desktopSidebar {
       width: var(--sidebar-width);
       top: 0;
       left: 0;
       height: 100vh;
-      overflow-y: auto;
+      overflow: hidden;  
       padding-top: 1rem;
       position: fixed;
       z-index: 1000;
     }
 
-    /* push content right on md+ */
-    @media (min-width: 768px) {
+    /* Sidebar nav styling */
+    .sidebar-nav {
+      width: 100%;
+      min-height: 100vh;
+      background: #191c24;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s;
+      box-shadow: 0 0 25px 0 rgba(0,0,0,.10);
+      height: 100vh;
+    }
+    .sidebar-nav .nav-link {
+      color: #b6c2e4;
+      font-weight: 500;
+      border-radius: .5rem;
+      margin: 0.2rem 0;
+      padding: 0.75rem 1.5rem;
+      transition: background 0.2s, color 0.2s;
+      text-align: left;
+    }
+    .sidebar-nav .nav-link.active,
+    .sidebar-nav .nav-link:hover,
+    .sidebar-nav .nav-link:focus {
+      background: #0d6efd;
+      color: #fff;
+    }
+    .sidebar-nav .logout-form {
+      margin-top: auto;
+      padding: 1rem 1.5rem;
+    }
+
+    .sidebar-toggle-btn {
+  display: none !important;
+}
+
+@media (max-width: 991.98px) {
+  .sidebar-toggle-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 2001;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+  }
+}
+
+    /* Content margin for desktop sidebar (≥992px) */
+    @media (min-width: 992px) {
       #mainContent {
         margin-left: var(--sidebar-width);
       }
     }
 
-    /* Fancier cards */
+    /* Mobile/tablet sidebar (offcanvas, <992px) */
+    @media (max-width: 991.98px) {
+      #desktopSidebar { display: none !important; }
+    }
+
+    /* Card styles (modern lift) */
     .card {
       border-radius: 0.75rem;
       box-shadow: 0 10px 12px rgba(0,0,0,0.15);
@@ -67,23 +124,35 @@
       transform: translateY(-4px);
       box-shadow: 0 8px 24px rgba(0,0,0,0.2);
     }
+
+    /* High-contrast focus */
+    input:focus, select:focus, textarea:focus, button:focus {
+      outline: 3px solid #0d6efd !important;
+      outline-offset: 2px;
+    }
   </style>
 </head>
 
 <body>
-  <!-- 1) Mobile: hamburger toggles offcanvas -->
+{% if user.is_authenticated %}
+  <!-- Sidebar and Hamburger Button Start -->
+  <!-- Hamburger Button (mobile, bottom-right) -->
   <button
-    class="btn btn-primary position-fixed top-0 start-0 m-2 d-md-none"
+    class="sidebar-toggle-btn btn btn-light shadow d-lg-none"
     type="button"
+    style="display:none;position:fixed;bottom:32px;right:32px;z-index:2001;"
+    aria-label="Open Menu"
+    id="mobileSidebarBtn"
     data-bs-toggle="offcanvas"
     data-bs-target="#mobileSidebar"
     aria-controls="mobileSidebar"
   >
-    <i class="bi bi-list"></i>
+    <i class="bi bi-list fs-2"></i>
   </button>
 
+  <!-- Offcanvas Sidebar for Mobile -->
   <div
-    class="offcanvas offcanvas-start bg-dark text-white d-md-none"
+    class="offcanvas offcanvas-start bg-dark text-white d-lg-none"
     tabindex="-1"
     id="mobileSidebar"
     aria-labelledby="mobileSidebarLabel"
@@ -102,20 +171,22 @@
     </div>
   </div>
 
-  <!-- 2) Desktop: always-visible sidebar -->
-  <aside
-    id="desktopSidebar"
-    class="d-none d-md-block bg-dark text-white"
-  >
+  <!-- Desktop Sidebar (always visible) -->
+  <aside id="desktopSidebar" class="d-none d-lg-block bg-dark text-white">
     {% include 'trades/_sidebar_nav.html' %}
   </aside>
+{% endif %}
 
-  <!-- 3) Main content area -->
-  <div id="mainContent" class="pt-3">
-    <div class="container-fluid">
-      {% block content %}{% endblock %}
-    </div>
+
+  
+
+  <!-- Main content area -->
+ <div id="mainContent" class="{% if user.is_authenticated %}with-sidebar{% endif %} pt-3">
+  <div class="container-fluid">
+    {% block content %}{% endblock %}
   </div>
+</div>
+
 
   <!-- Toast container (unchanged) -->
   <div

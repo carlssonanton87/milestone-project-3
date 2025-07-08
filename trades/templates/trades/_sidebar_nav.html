@@ -1,32 +1,44 @@
-<!-- shared nav for both mobile+desktop -->
-<nav class="nav flex-column">
-  <a class="navbar-brand px-3 mb-3" href="{% url 'dashboard' %}">TradeTracker</a>
-  <a class="nav-link px-3 {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
-     href="{% url 'dashboard' %}">
-    <i class="bi bi-speedometer2 me-2"></i> Dashboard
-  </a>
-  <a class="nav-link px-3 {% if request.resolver_match.url_name == 'trade_list' %}active{% endif %}"
-     href="{% url 'trade_list' %}">
-    <i class="bi bi-table me-2"></i> My Trades
-  </a>
-  <a class="nav-link px-3 {% if request.resolver_match.url_name == 'add_trade' %}active{% endif %}"
-     href="{% url 'add_trade' %}">
-    <i class="bi bi-plus-circle me-2"></i> Add Trade
-  </a>
-  <a class="nav-link px-3 {% if request.resolver_match.url_name == 'account' %}active{% endif %}"
-     href="{% url 'account' %}">
-    <i class="bi bi-person-circle me-2"></i> My Account
-  </a>
+<nav id="sidebar" class="sidebar-nav bg-dark">
+  <div class="sidebar-brand d-flex align-items-center px-3 py-3 mb-3">
+    <i class="bi bi-bar-chart-line-fill me-2 fs-4 text-primary"></i>
+    <span class="fw-bold fs-5 text-white">TradeTracker</span>
+  </div>
+  <ul class="nav flex-column align-items-stretch">
+    <li class="nav-item">
+      <a href="{% url 'dashboard' %}" 
+         class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <i class="bi bi-bar-chart me-2"></i> Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'trade_list' %}" 
+         class="nav-link {% if request.resolver_match.url_name == 'trade_list' %}active{% endif %}">
+        <i class="bi bi-table me-2"></i> My Trades
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'add_trade' %}" 
+         class="nav-link {% if request.resolver_match.url_name == 'add_trade' %}active{% endif %}">
+        <i class="bi bi-plus-circle me-2"></i> Add Trade
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'account' %}" 
+         class="nav-link {% if request.resolver_match.url_name == 'account' %}active{% endif %}">
+        <i class="bi bi-person-circle me-2"></i> My Account
+      </a>
+    </li>
+  </ul>
   {% if user.is_authenticated %}
-    <form method="post" action="{% url 'logout' %}" class="px-3 mt-2">
+    <form method="post" action="{% url 'logout' %}" class="logout-form mt-auto mb-4 px-3">
       {% csrf_token %}
-      <button type="submit" class="btn btn-outline-light w-100 text-start">
+      <button type="submit" class="btn btn-outline-light w-100">
         <i class="bi bi-box-arrow-right me-2"></i> Logout
       </button>
     </form>
-  {% else %}
-    <a class="nav-link px-3" href="{% url 'login' %}">
-      <i class="bi bi-box-arrow-in-right me-2"></i> Login
-    </a>
   {% endif %}
 </nav>
+
+<button id="sidebarToggle" class="btn btn-primary sidebar-toggle-btn" aria-label="Open menu">
+  <i class="bi bi-list fs-2"></i>
+</button>
