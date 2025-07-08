@@ -28,7 +28,7 @@ INSTRUMENT_API_KEY = os.getenv("INSTRUMENT_API_KEY")
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-x1l%hg@nf5zzi-egbw)-4g-3t#u_zll1-dc2bi47)=$y4v*gsl"
+# SECRET_KEY = "django-insecure-x1l%hg@nf5zzi-egbw)-4g-3t#u_zll1-dc2bi47)=$y4v*gsl"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  
