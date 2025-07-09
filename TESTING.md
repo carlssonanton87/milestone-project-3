@@ -37,6 +37,9 @@ This document outlines the testing strategy for the TradeTracker Django project.
 
 #### US01: As a user, I want to register and log in securely, so I can access and manage my trades.
 
+[Kanban Board (USER STORY: User Management)](https://github.com/carlssonanton87/milestone-project-3/issues/1)
+
+
 | **Test Scenario ID** | **Test Scenario**                 | **Steps to Test**                                                                                                                         | **Expected Result**                                         | **Pass/Fail** | **Screenshots**                                             |
 | -------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------- | ----------------------------------------------------------- |
 | UM-TS01              | Registration form loads correctly | Open `/signup/` (or Registration link). Confirm username, password, and password confirmation fields are shown, styled with crispy forms. | Form loads, styled consistently and responsively.           | Pass          | ![UM-TS01](readme_assets/images/manual_testing/UM-TS01.png) |
@@ -58,6 +61,8 @@ This document outlines the testing strategy for the TradeTracker Django project.
 
 ### US01 & US02: As a user, I want to see my total trades, win rate, average return %, holding time, and trade outcomes.
 
+[Kanban Board (USER STORY: Dashboard & Insights )](https://github.com/carlssonanton87/milestone-project-3/issues/3)
+
 | **Test Scenario ID** | **Test Scenario**                     | **Steps to Test**                                                  | **Expected Result**                                                             | **Pass/Fail** | **Screenshots**                                             |
 | -------------------- | ------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------- |
 | DI-TS01              | Dashboard loads and shows metrics     | Log in and go to `/dashboard/`                                     | Total trades, win rate, average return %, avg hold, outcomes are shown in cards | Pass          | ![DI-TS01](readme_assets/images/manual_testing/DI-TS01.png) |
@@ -77,6 +82,8 @@ This document outlines the testing strategy for the TradeTracker Django project.
 ## Trade Logging 
 
 ### US01 & US02: As a user, I want to add, edit, and delete trades to keep an accurate journal.
+
+[Kanban Board (USER STORY: Trade Logging )](https://github.com/carlssonanton87/milestone-project-3/issues/2)
 
 | **Test Scenario ID** | **Test Scenario**                       | **Steps to Test**                                           | **Expected Result**                                                                          | **Pass/Fail** | **Screenshots**                                             |
 | -------------------- | --------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------- |
@@ -103,6 +110,8 @@ This document outlines the testing strategy for the TradeTracker Django project.
 
 ### US01: As a user, I want confirmation when I perform actions so I know they worked.
 
+[Kanban Board (USER STORY: Feedback & Confirmation )](https://github.com/carlssonanton87/milestone-project-3/issues/4)
+
 | **Test Scenario ID** | **Test Scenario**                | **Steps to Test**                                       | **Expected Result**                                      | **Pass/Fail** | **Screenshots**                                             |
 | -------------------- | -------------------------------- | ------------------------------------------------------- | -------------------------------------------------------- | ------------- | ----------------------------------------------------------- |
 | FC-TS01              | Success message on trade add     | Add a new trade via form                                | Toast message appears: "Trade successfully added."       | Pass          | ![FC-TS01](readme_assets/images/manual_testing/FC-TS01.png) |
@@ -121,6 +130,8 @@ This document outlines the testing strategy for the TradeTracker Django project.
 ## UX & Filtering
 
 ### US01: As a user, I want to filter trades by instrument or outcome.
+
+[Kanban Board (USER STORY: UX & Filtering )](https://github.com/carlssonanton87/milestone-project-3/issues/5)
 
 | **Test Scenario ID** | **Test Scenario**        | **Steps to Test**                                          | **Expected Result**                                   | **Pass/Fail** | **Screenshots**                                               |
 | -------------------- | ------------------------ | ---------------------------------------------------------- | ----------------------------------------------------- | ------------- | ------------------------------------------------------------- |
