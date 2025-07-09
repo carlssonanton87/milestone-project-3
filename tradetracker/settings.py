@@ -33,9 +33,9 @@ INSTRUMENT_API_KEY = os.getenv("INSTRUMENT_API_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  
 # pull from env, but default to localhost/127.0.0.1 if unset
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1', 'trade-tracker-0f5ec3eccb7d.herokuapp.com', '.herokuapp.com').split(',')
 
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8000', "https://trade-tracker-0f5ec3eccb7d.herokuapp.com"]
 
 
 LOGIN_URL = '/admin/login/'
