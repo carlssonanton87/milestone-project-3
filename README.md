@@ -1,6 +1,13 @@
 # TradeTracker 📈
+![GitHub commit activity](https://img.shields.io/github/commit-activity/t/carlssonanton87/milestone-project-3)
+![GitHub last commit](https://img.shields.io/github/last-commit/carlssonanton87/milestone-project-3)
+![GitHub repo size](https://img.shields.io/github/repo-size/carlssonanton87/milestone-project-3)
+
+![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=carlssonanton87&repo=milestone-project-3&layout=compact)
 
 **TradeTracker** is a full-stack Django web application that helps users track their trades and view key statistics. Users can log in to add, update, and delete trades, and view a personalized dashboard with insights such as win rate, average return, and holding time — all with custom date filtering.
+
+[Live Demo](https://trade-tracker-0f5ec3eccb7d.herokuapp.com/)
 
 ## Features
 

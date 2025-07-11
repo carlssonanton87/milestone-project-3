@@ -1,46 +1,260 @@
 {% extends 'trades/base.html' %}
+
+{% block extra_css %}
+<style>
+  /* Hero */
+  .hero-section {
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+    text-align: center;
+  }
+  @media (min-width: 992px) {
+    .hero-section { padding-top: 5.5rem; padding-bottom: 2.8rem; }
+  }
+  .hero-icon {
+    font-size: 3.7rem;
+    color: #2260e9;
+    margin-bottom: .6rem;
+    filter: drop-shadow(0 2px 8px #9db6e699);
+  }
+  .hero-title {
+    color: #183153;
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+  .hero-lead {
+    color: #344055;
+    font-size: 1.19rem;
+    margin: 1rem auto 2.1rem;
+    max-width: 490px;
+    font-weight: 500;
+  }
+  .hero-btns .btn {
+    font-weight: 600;
+    min-width: 140px;
+    border-radius: 2rem;
+    margin: 0 6px 7px 0;
+  }
+
+  /* Features */
+  .features-section {
+    margin-top: 0;
+    margin-bottom: 2.1rem;
+    gap: 1.5rem 0;
+  }
+  .feature-card {
+    background: #f5f8fe;
+    border: none;
+    border-radius: 1.1rem;
+    min-height: 210px;
+    box-shadow: 0 2px 10px #c4d7f21f;
+    transition: transform .13s, box-shadow .13s;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px) scale(1.015);
+    box-shadow: 0 8px 32px #b6c9e92b;
+  }
+  .feature-card h5 {
+    font-weight: 700;
+    color: #122243;
+  }
+  .feature-card .feature-icon {
+    font-size: 2.3rem;
+    margin-bottom: 10px;
+  }
+  .feature-card p {
+    color: #2e3956;
+    font-size: 1.05rem;
+    font-weight: 500;
+  }
+
+  /* Benefits */
+  .feature-list li {
+    font-size: 1.11rem;
+    margin-bottom: 0.22rem;
+    color: #244063;
+  }
+
+  /* Testimonials */
+  .testimonials-section {
+    margin-top: 2rem;
+    margin-bottom: 1.2rem;
+  }
+  .testimonial-card {
+    background: #f8fafd;
+    border: none;
+    border-radius: 1.07rem;
+    min-height: 146px;
+    box-shadow: 0 2px 8px #b9c5e729;
+    padding: 1.5rem 1.3rem 1.15rem 1.3rem;
+    position: relative;
+    margin-bottom: 0.5rem;
+    color: #233153;
+    overflow: hidden;
+  }
+  .testimonial-quote {
+    font-family: serif;
+    font-size: 3.6rem;
+    color: #c1d6f7;
+    position: absolute;
+    top: -22px; left: 16px;
+    opacity: .45;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .testimonial-card p {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 1.1rem;
+    font-size: 1.07rem;
+    line-height: 1.33;
+    font-weight: 500;
+    color: #223354;
+  }
+  .testimonial-footer {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    font-size: 1.05rem;
+    color: #5a6580;
+    font-weight: 500;
+    z-index: 2;
+    position: relative;
+  }
+  .testimonial-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    object-fit: cover; border: 2px solid #e7effa;
+    box-shadow: 0 2px 5px #c2d8fd33;
+  }
+  .section-title {
+    font-weight: 800;
+    color: #153667;
+    margin-bottom: 1.3rem;
+    letter-spacing: -.5px;
+  }
+  @media (max-width: 991px) {
+    .hero-section { padding-top: 2.2rem; }
+    .hero-icon { font-size: 2.3rem; }
+    .testimonials-section { margin-top: 1.1rem; }
+    .testimonial-card { min-height: 110px; }
+    .section-title { font-size: 1.18rem; }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="container-lg px-3">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <i class="bi bi-bar-chart hero-icon"></i>
+    <h1 class="display-4 hero-title mb-2">TradeTracker</h1>
+    <p class="hero-lead">
+      Your all-in-one trading journal. Analyze your performance, spot strengths, and level up your trading discipline.
+    </p>
+    <div class="d-flex flex-wrap justify-content-center hero-btns mb-2">
+      <a href="{% url 'signup' %}" class="btn btn-lg btn-primary px-4 shadow-sm">Sign up free</a>
+      <a href="{% url 'login' %}" class="btn btn-lg btn-outline-primary px-4">Login</a>
+    </div>
+  </section>
 
-<div class="text-center py-5">
-  <h1 class="display-4">📊 TradeTracker</h1>
-  <p class="lead">Your personal trading journal — track, analyze, and improve your trading performance.</p>
-  <div class="mt-4">
-    <a href="{% url 'signup' %}" class="btn btn-primary btn-lg me-2">Get Started</a>
-    <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg">Login</a>
-  </div>
+  <!-- Features Section -->
+  <section class="features-section row justify-content-center g-3">
+    <div class="col-12 col-md-4">
+      <div class="card feature-card text-center h-100">
+        <div class="card-body">
+          <i class="bi bi-bar-chart-line feature-icon text-primary"></i>
+          <h5 class="mb-2">Powerful Analytics</h5>
+          <p>Visualize results, win rates, and performance trends with beautiful, interactive charts.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card feature-card text-center h-100">
+        <div class="card-body">
+          <i class="bi bi-cloud-arrow-up feature-icon text-success"></i>
+          <h5 class="mb-2">Easy Import & Export</h5>
+          <p>Bulk import your trades from CSV, and export your journal anytime. Your data is always yours.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card feature-card text-center h-100">
+        <div class="card-body">
+          <i class="bi bi-shield-lock feature-icon text-info"></i>
+          <h5 class="mb-2">Private & Secure</h5>
+          <p>All your data is protected with secure login, privacy controls, and account management.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="text-center mt-5 mb-4">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-9 col-lg-7">
+        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=800&q=80"
+             class="img-fluid rounded-4 border shadow mb-4"
+             style="max-height: 240px; object-fit: cover;"
+             alt="Dashboard preview" loading="lazy">
+        <h3 class="fw-bold mb-3" style="color:#183153;">Everything you need to become a better trader</h3>
+        <ul class="list-unstyled feature-list mb-4">
+          <li><i class="bi bi-check2-circle text-success me-2"></i> Customizable dashboard and statistics</li>
+          <li><i class="bi bi-check2-circle text-success me-2"></i> Mobile-friendly, use anywhere</li>
+          <li><i class="bi bi-check2-circle text-success me-2"></i> Full privacy controls and easy account management</li>
+        </ul>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials-section">
+    <h4 class="section-title text-center mb-4">What our users say</h4>
+    <div class="row justify-content-center g-3">
+      <div class="col-12 col-md-4">
+        <div class="testimonial-card">
+          <span class="testimonial-quote">“</span>
+          <p>
+            TradeTracker helped me get serious about my trades—my win rate is up 10%!
+          </p>
+          <div class="testimonial-footer">
+            <img src="https://randomuser.me/api/portraits/women/65.jpg" class="testimonial-avatar" alt="Anna S. avatar">
+            Anna S., Sweden
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="testimonial-card">
+          <span class="testimonial-quote">“</span>
+          <p>
+            Finally, a trading journal that's actually fun to use. Love the charts!
+          </p>
+          <div class="testimonial-footer">
+            <img src="https://randomuser.me/api/portraits/men/14.jpg" class="testimonial-avatar" alt="James L. avatar">
+            James L., UK
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="testimonial-card">
+          <span class="testimonial-quote">“</span>
+          <p>
+            Importing all my trades from Excel was a breeze. 10/10.
+          </p>
+          <div class="testimonial-footer">
+            <img src="https://randomuser.me/api/portraits/women/66.jpg" class="testimonial-avatar" alt="Maria P. avatar">
+            Maria P., Germany
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-body-tertiary py-4 mt-5 border-top text-center">
+    <div class="container">
+      <small class="text-secondary">© TradeTracker. Made for traders, by traders. | <a href="mailto:support@tradetracker.com" class="text-decoration-underline">Contact us</a></small>
+    </div>
+  </footer>
 </div>
-
-<div class="container my-5">
-  <div class="row text-center">
-    <div class="col-md-4 mb-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <h5 class="card-title">📘 Log Your Trades</h5>
-          <p class="card-text">Easily add and edit your trades with performance data like return %, holding time, and outcome.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 mb-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <h5 class="card-title">📊 View Your Stats</h5>
-          <p class="card-text">Get an overview of your win rate, average return, and holding time — updated in real time.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 mb-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <h5 class="card-title">📅 Filter By Date</h5>
-          <p class="card-text">Use preset ranges or a custom slider to drill into performance over time.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<footer class="text-center text-muted py-4">
-  <p>Ready to take control of your trading? <a href="{% url 'signup' %}">Sign up now</a> – it’s free.</p>
-</footer>
-
 {% endblock %}

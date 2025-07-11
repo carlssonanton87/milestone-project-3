@@ -222,10 +222,16 @@
   
 
   <!-- Main content area -->
- <div id="mainContent" class="{% if user.is_authenticated %}with-sidebar{% endif %} pt-3">
-  <div class="container-fluid">
+<div id="mainContent" class="
+    {% if user.is_authenticated %}
+        with-sidebar container
+    {% elif request.resolver_match.url_name == 'landing' %}
+        p-0 m-0
+    {% else %}
+        container
+    {% endif %}
+">
     {% block content %}{% endblock %}
-  </div>
 </div>
 
 
