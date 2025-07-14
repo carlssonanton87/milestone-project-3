@@ -1,10 +1,14 @@
 {% extends "trades/base.html" %}
 
 {% block content %}
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Login</button>
-  </form>
+<div class="login-page-outer">
+  <div class="login-form-card">
+    <h2 class="mb-4 text-center">Login</h2>
+    <form method="post" class="text-center">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+  </div>
+</div>
 {% endblock %}

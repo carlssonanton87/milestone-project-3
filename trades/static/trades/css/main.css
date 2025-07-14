@@ -221,6 +221,7 @@ input:focus, select:focus, textarea:focus, button:focus {
   font-size: 1.11rem;
   margin-bottom: 0.22rem;
   color: #244063;
+  z-index: 10; 
 }
 
 /* Testimonials */
@@ -241,6 +242,7 @@ input:focus, select:focus, textarea:focus, button:focus {
   margin-bottom: 0.5rem;
   color: #233153;
   overflow: hidden;
+  z-index: 10; 
 }
 .testimonial-quote {
   font-family: serif;
@@ -270,6 +272,7 @@ input:focus, select:focus, textarea:focus, button:focus {
   font-weight: 500;
   z-index: 2;
   position: relative;
+  z-index: 10; 
 }
 .testimonial-avatar {
   width: 34px; height: 34px; border-radius: 50%;
@@ -292,4 +295,27 @@ input:focus, select:focus, textarea:focus, button:focus {
 
 .container-lg, .hero-section {
   background: transparent !important;
+}
+
+.login-page-outer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e3ebf7;
+  padding: 2rem 0;
+}
+
+.login-form-card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 6px 32px #1a233514;
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 300px;
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+}
+#mainContent.with-sidebar {
+  margin-top: 2rem;
 }
