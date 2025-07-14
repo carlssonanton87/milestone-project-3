@@ -38,6 +38,15 @@ TradeTracker uses Django’s messages framework, rendered as non-blocking **Boot
 - **Undo support:** Delete actions include an **Undo** link in the toast, which restores the most recently deleted trade.
 - **Customization:** All styling and behavior is defined in `templates/trades/base.html` and can be adjusted there.
 
+<?xml version="1.0" encoding="utf-8"?>
+          <!-- Exported from Coolors.co - https://coolors.co/212529-dce5f1-47cc29-378dfc-5b62f4 -->
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 500 250" xml:space="preserve">
+            <rect fill="#212529" x="0" y="0" width="100" height="220"/>,<rect fill="#DCE5F1" x="100" y="0" width="100" height="220"/>,<rect fill="#47CC29" x="200" y="0" width="100" height="220"/>,<rect fill="#378DFC" x="300" y="0" width="100" height="220"/>,<rect fill="#5B62F4" x="400" y="0" width="100" height="220"/>
+            <text x="10" y="235" font-family="Arial" font-size="6" alignment-baseline="middle">Exported from Coolors.co</text>
+            <text x="490" y="235" font-family="Arial" font-size="6" alignment-baseline="middle" text-anchor="end">https://coolors.co/212529-dce5f1-47cc29-378dfc-5b62f4</text>
+          </svg>
+
+          https://coolors.co/212529-dce5f1-47cc29-378dfc-5b62f4
 
 ### User Stories
 

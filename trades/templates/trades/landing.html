@@ -1,24 +1,22 @@
 {% extends 'trades/base.html' %}
-
 {% load static %}
 
 {% block content %}
+<div id="particles-bg"></div>
+<section class="hero-section">
+  <i class="bi bi-bar-chart hero-icon"></i>
+  <h1 class="display-4 hero-title mb-2">TradeTracker</h1>
+  <p class="hero-lead">
+    Your all-in-one trading journal. Analyze your performance, spot strengths, and level up your trading discipline.
+  </p>
+  <div class="d-flex flex-wrap justify-content-center hero-btns mb-2">
+    <a href="{% url 'signup' %}" class="btn btn-lg btn-primary px-4 shadow-sm">Sign up free</a>
+    <a href="{% url 'login' %}" class="btn btn-lg btn-outline-primary px-4">Login</a>
+  </div>
+</section>
+
+<!-- Rest of your content remains the same -->
 <div class="container-lg px-3">
-  <link rel="stylesheet" href="{% static 'trades/css/main.css' %}">
-
-  <!-- Hero Section -->
-  <section class="hero-section">
-    <i class="bi bi-bar-chart hero-icon"></i>
-    <h1 class="display-4 hero-title mb-2">TradeTracker</h1>
-    <p class="hero-lead">
-      Your all-in-one trading journal. Analyze your performance, spot strengths, and level up your trading discipline.
-    </p>
-    <div class="d-flex flex-wrap justify-content-center hero-btns mb-2">
-      <a href="{% url 'signup' %}" class="btn btn-lg btn-primary px-4 shadow-sm">Sign up free</a>
-      <a href="{% url 'login' %}" class="btn btn-lg btn-outline-primary px-4">Login</a>
-    </div>
-  </section>
-
   <!-- Features Section -->
   <section class="features-section row justify-content-center g-3">
     <div class="col-12 col-md-4">
@@ -64,7 +62,6 @@
           <li><i class="bi bi-check2-circle text-success me-2"></i> Mobile-friendly, use anywhere</li>
           <li><i class="bi bi-check2-circle text-success me-2"></i> Full privacy controls and easy account management</li>
         </ul>
-        
       </div>
     </div>
   </section>
@@ -75,7 +72,7 @@
     <div class="row justify-content-center g-3">
       <div class="col-12 col-md-4">
         <div class="testimonial-card">
-          <span class="testimonial-quote">“</span>
+          <span class="testimonial-quote">"</span>
           <p>
             TradeTracker helped me get serious about my trades—my win rate is up 10%!
           </p>
@@ -87,7 +84,7 @@
       </div>
       <div class="col-12 col-md-4">
         <div class="testimonial-card">
-          <span class="testimonial-quote">“</span>
+          <span class="testimonial-quote">"</span>
           <p>
             Finally, a trading journal that's actually fun to use. Love the charts!
           </p>
@@ -99,7 +96,7 @@
       </div>
       <div class="col-12 col-md-4">
         <div class="testimonial-card">
-          <span class="testimonial-quote">“</span>
+          <span class="testimonial-quote">"</span>
           <p>
             Importing all my trades from Excel was a breeze. 10/10.
           </p>
@@ -119,4 +116,120 @@
     </div>
   </footer>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Use particles.js instead of tsParticles -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("Loading particles...");
+  
+  // Simple particles.js implementation
+  particlesJS("particles-bg", {
+    "particles": {
+      "number": {
+        "value": 80,
+        "density": {
+          "enable": true,
+          "value_area": 800
+        }
+      },
+      "color": {
+        "value": "#2260e9"
+      },
+      "shape": {
+        "type": "circle",
+        "stroke": {
+          "width": 0,
+          "color": "#000000"
+        }
+      },
+      "opacity": {
+        "value": 0.5,
+        "random": false,
+        "anim": {
+          "enable": false,
+          "speed": 1,
+          "opacity_min": 0.1,
+          "sync": false
+        }
+      },
+      "size": {
+        "value": 5,
+        "random": true,
+        "anim": {
+          "enable": false,
+          "speed": 40,
+          "size_min": 0.1,
+          "sync": false
+        }
+      },
+      "line_linked": {
+        "enable": true,
+        "distance": 150,
+        "color": "#2260e9",
+        "opacity": 0.4,
+        "width": 1.5
+      },
+      "move": {
+        "enable": true,
+        "speed": 6,
+        "direction": "none",
+        "random": false,
+        "straight": false,
+        "out_mode": "out",
+        "bounce": false,
+        "attract": {
+          "enable": false,
+          "rotateX": 600,
+          "rotateY": 1200
+        }
+      }
+    },
+    "interactivity": {
+      "detect_on": "canvas",
+      "events": {
+        "onhover": {
+          "enable": true,
+          "mode": "repulse"
+        },
+        "onclick": {
+          "enable": true,
+          "mode": "push"
+        },
+        "resize": true
+      },
+      "modes": {
+        "grab": {
+          "distance": 400,
+          "line_linked": {
+            "opacity": 1
+          }
+        },
+        "bubble": {
+          "distance": 400,
+          "size": 150,
+          "duration": 2,
+          "opacity": 8,
+          "speed": 3
+        },
+        "repulse": {
+          "distance": 200,
+          "duration": 0.4
+        },
+        "push": {
+          "particles_nb": 4
+        },
+        "remove": {
+          "particles_nb": 2
+        }
+      }
+    },
+    "retina_detect": true
+  });
+  
+  console.log("Particles loaded successfully!");
+});
+</script>
 {% endblock %}
