@@ -145,41 +145,37 @@ The color [palette](https://coolors.co/212529-dce5f1-47cc29-378dfc-5b62f4/) was 
 #### Wireframes
 
 Key pages wireframed:
-- Landing Page
-- Dashboard
-- Trade List
-- Add trades
-
-Wireframes were created bu using Visily.ai
 <details>
 <summary>Landing Page</summary>
 <br>
 
-![Index page](readme_assets/wireframes/landingpage.png)
+![Index page](readme_assets/wireframes/LandingPage.png)
 </details>
 
 <details>
 <summary>Dashboard</summary>
 <br>
 
-![Index page](readme_assets/wireframes/dashboard.png)
+![Index page](readme_assets/wireframes/Dashboard.png)
 </details>
 
 <details>
 <summary>Trade List</summary>
 <br>
 
-![Index page](readme_assets/wireframes/mytrades.png)
+![Index page](readme_assets/wireframes/MyTrades.png)
 </details>
 
 <details>
 <summary>Add trades</summary>
 <br>
 
-![Index page](readme_assets/wireframes/addtrades.png)
+![Index page](readme_assets/wireframes/AddTrade.png)
 </details>
 
-> *(Insert wireframe images as appropriate)*
+
+
+Wireframes were created by using Visily.ai
 
 #### Flash Messages
 TradeTracker uses Django’s messages framework, rendered as non-blocking **Bootstrap toasts** with the following characteristics:
