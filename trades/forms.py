@@ -4,6 +4,8 @@ from crispy_forms.layout import Layout, Field, Submit
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import Trade
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 class TradeForm(forms.ModelForm):
     class Meta:
@@ -114,3 +116,9 @@ class CSVImportForm(forms.Form):
         label="Select CSV file",
         help_text="Columns: instrument,position_size,entry_price,exit_price,entry_date,exit_date,outcome,notes"
     )
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')

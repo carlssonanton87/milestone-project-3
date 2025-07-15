@@ -16,7 +16,7 @@ from django.utils.safestring         import mark_safe
 from django.http                     import JsonResponse, HttpResponse
 
 from .models import Trade
-from .forms  import TradeForm, CSVImportForm
+from .forms  import TradeForm, CSVImportForm, CustomUserCreationForm
 
 
 def trigger_error(request):
@@ -371,3 +371,13 @@ def import_trades_csv(request):
         messages.success(request, f"Imported {count} trades successfully.")
         return redirect('trade_list')
     return render(request, 'trades/import_trades.html', {'form': form})
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Log user in or redirect
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})
