@@ -146,10 +146,38 @@ The color [palette](https://coolors.co/212529-dce5f1-47cc29-378dfc-5b62f4/) was 
 
 Key pages wireframed:
 - Landing Page
-- Registration/Login
 - Dashboard
-- Trade List (CRUD)
-- Import/Export
+- Trade List
+- Add trades
+
+Wireframes were created bu using Visily.ai
+<details>
+<summary>Landing Page</summary>
+<br>
+
+![Index page](readme_assets/wireframes/landingpage.png)
+</details>
+
+<details>
+<summary>Dashboard</summary>
+<br>
+
+![Index page](readme_assets/wireframes/dashboard.png)
+</details>
+
+<details>
+<summary>Trade List</summary>
+<br>
+
+![Index page](readme_assets/wireframes/mytrades.png)
+</details>
+
+<details>
+<summary>Add trades</summary>
+<br>
+
+![Index page](readme_assets/wireframes/addtrades.png)
+</details>
 
 > *(Insert wireframe images as appropriate)*
 
