@@ -223,23 +223,27 @@ The project was tested on various devices to ensure seamless responsiveness and 
 
 I have validated all HTML files using the recommended [HTML W3C Validator](https://validator.w3.org) to ensure they meet current web standards and best practices.
 
+![Screenshot](readme_assets/images/browsers/html-validator.png) 
+
 ### CSS Testing
 
-I primarily used Bootstrap 5.3.3 for styling across the project templates, complemented by custom CSS for specific components and layouts. Additionally, I employed LESS CSS for modular and reusable styles where applicable. To ensure compliance with current standards and best practices, I validated all custom CSS files using the recommended [CSS jigsaw Validator](https://jigsaw.w3.org/css-validator/)
+I primarily used Bootstrap 5.3.3 for styling across the project templates, complemented by custom CSS for specific components and layouts. Additionally, To ensure compliance with current standards and best practices, I validated all custom CSS files using the recommended [CSS jigsaw Validator](https://jigsaw.w3.org/css-validator/)
+
+![Screenshot](readme_assets/images/browsers/css-validator.png) 
+
 
 ### JavaScript Testing
 
-In this project, I utilized both **JavaScript** and **jQuery** for various functionalities:
+In this project, I utilized  **JavaScript** for various functionalities:
 
-- **JavaScript**: Primarily used for Bootstrap components and DOM manipulation, such as tooltips.
-- **jQuery**: Implemented custom functionality, including form handling and UI effects.
+- **JavaScript**: Primarily used for Bootstrap components and DOM manipulation.
 
-To ensure code quality and adherence to best practices, I validated my custom JavaScript and jQuery code using the recommended [JSHint Validator](https://jshint.com).
+To ensure code quality and adherence to best practices, I validated my custom JavaScript code using the recommended [JSHint Validator](https://jshint.com).
 
 | **Script Type** | **Validation Screenshot**  | **Comments** |
 |-----------------|----------------------------|--------------|
-| `javaScript Code` | ![base validation](readme_assets/images/code_validation/js-validation.png) | Tooltip functionality directly copied from the [Bootstrap Documentation](https://getbootstrap.com/docs/5.2/components/tooltips/). |
-| `jquery Code` | ![base validation](readme_assets/images/code_validation/jquery-validation.png) | This code ensures that success messages fade out after 3 seconds and resets the first comment form on the page, enhancing the user experience. |
+| `javaScript Code` | ![base validation](readme_assets/images/code_validation/js-validation.png) | |
+
 ---
 
  ## Lighthouse Testing
@@ -257,6 +261,10 @@ Lighthouse was utilized to evaluate the **performance**, **accessibility**, **be
 
 At the end of the project, all Python files were thoroughly validated to ensure adherence to PEP8 standards. The following tools were used:
 
+- **Black**: To ensure consistent and readable code style across the project, I used [Black](https://pypi.org/project/black//), the uncompromising Python code formatter. Black automatically reformats all Python files according to a strict and widely-accepted standard, eliminating style debates and making the codebase easier to maintain and review. The entire project was formatted using Black before final submission.
+
+This final validation step ensured that the code meets industry-standard best practices for readability and maintainability.
+
 - **PEP8 CI Python Linter**: Custom Python files were validated using the [Code Institute PEP8 Validator](https://pep8ci.herokuapp.com/) to ensure compliance with PEP8 guidelines.
 
 This final validation step ensured that the code meets industry-standard best practices for readability and maintainability.
@@ -269,15 +277,12 @@ All Python files passed the validation checks, confirming compliance with PEP8 s
 | `Project Level ` |`manage.py` | ![manage.py validation](readme_assets/images/pep8/manage.png) | Passed with no issues |
 | `Project Folder ` |`settings.py` | ![manage.py validation](readme_assets/images/pep8/project_settings.png) | Formatting issues resolved |
 | `Project Folder ` |`urls.py` | ![urls.py validation](readme_assets/images/pep8/project_urls.png) | Code adjusted for line-length compliance |
-| `Users App ` |`views.py` | ![views.py validation](readme_assets/images/pep8/users_views.png) | Passed with no issues|
-| `Users App ` |`forms.py` | ![forms.py validation](readme_assets/images/pep8/users_forms.png) | Code adjusted for line-length compliance|
-| `Users App ` |`urls.py` | ![urls.py validation](readme_assets/images/pep8/users_urls.png) | Passed PEP8 validation |
-| `Pets App ` |`views.py` | ![views.py validation](readme_assets/images/pep8/pets_views.png) | Passed with no issues |
-| `Pets App ` |`urls.py` | ![urls.py validation](readme_assets/images/pep8/pets_urls.png) | Passed with no issues |
-| `Pets App ` |`topics_data.py` | ![topics_data.py validation](readme_assets/images/pep8/topics_data.png) | Code adjusted for line-length compliance |
-| `Pets App ` |`models.py` | ![models.py validation](readme_assets/images/pep8/pets_models.png) | Code adjusted for line-length compliance |
-| `Pets App ` |`forms.py` | ![forms.py validation](readme_assets/images/pep8/pets_forms.png) | Passed with no issues|
-| `Pets App ` |`admin.py` | ![admin.py validation](readme_assets/images/pep8/pets_admin.png) | Passed with no issues|
+| `Trades App ` |`views.py` | ![views.py validation](readme_assets/images/pep8/trades_views.png) | Passed with no issues|
+| `Trades App ` |`forms.py` | ![forms.py validation](readme_assets/images/pep8/trades_forms.png) | Code adjusted for line-length compliance|
+| `Trades App ` |`urls.py` | ![urls.py validation](readme_assets/images/pep8/trades_urls.png) | Passed PEP8 validation |
+| `Trades App ` |`admin.py` | ![views.py validation](readme_assets/images/pep8/trades_admin.png) | Passed with no issues |
+| `Trades App ` |`models.py` | ![forms.py validation](readme_assets/images/pep8/trades_models.png) | Passed with no issues|
+
 ---
 
 [Go to Contents](#contents)
