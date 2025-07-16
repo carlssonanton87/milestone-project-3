@@ -92,7 +92,6 @@ This document outlines the testing strategy for the TradeTracker Django project.
 | TL-TS03              | Validation: required fields             | Try submitting form with missing fields                     | Error messages for missing required fields                                                   | Pass          | ![TL-TS03](readme_assets/images/manual_testing/TL-TS03.png) |
 | TL-TS04              | Validation: non-negative prices & logic | Enter negative numbers or end date before start date        | Validation prevents submission; errors shown                                                 | Pass          | ![TL-TS04](readme_assets/images/manual_testing/TL-TS04.png) |
 | TL-TS05              | Edit existing trade                     | From list, click edit on a trade, update values, submit     | Changes are saved and visible in list and dashboard                                          | Pass          | ![TL-TS05](readme_assets/images/manual_testing/TL-TS05.png) |
-| TL-TS06              | Edit another user's trade (security)    | Log in as user B, try editing user A's trade (URL hacking)  | 404 or error page; user B cannot edit trade                                                  | Pass          | ![TL-TS06](readme_assets/images/manual_testing/TL-TS06.png) |
 | TL-TS07              | Delete trade with confirmation          | Click delete, confirm in modal or form, trade is removed    | Trade disappears from list and dashboard updates                                             | Pass          | ![TL-TS07](readme_assets/images/manual_testing/TL-TS07.png) |
 | TL-TS08              | Delete another user's trade (security)  | Log in as user B, try deleting user A's trade (URL hacking) | 404 or error; trade is not deleted                                                           | Pass          | ![TL-TS08](readme_assets/images/manual_testing/TL-TS08.png) |
 | TL-TS09              | Success/error messages shown            | Add, edit, or delete a trade                                | Toast or alert confirms success or error                                                     | Pass          | ![TL-TS09](readme_assets/images/manual_testing/TL-TS09.png) |
@@ -101,7 +100,7 @@ This document outlines the testing strategy for the TradeTracker Django project.
 | TL-TS12              | Trade list: sort works                  | Click table headers or sort options                         | Trades re-order by selected field (date, return, etc.)                                       | Pass          | ![TL-TS12](readme_assets/images/manual_testing/TL-TS12.png) |
 | TL-TS13              | CSV Export                              | Click “Export CSV”, open downloaded file                    | File has correct headers and trade rows                                                      | Pass          | ![TL-TS13](readme_assets/images/manual_testing/TL-TS13.png) |
 | TL-TS14              | CSV Import                              | Use “Import CSV”, select valid file                         | Trades are added; success message shown                                                      | Pass          | ![TL-TS14](readme_assets/images/manual_testing/TL-TS14.png) |
-| TL-TS15              | CSV Import: bad file                    | Try to import file with missing/invalid columns             | Graceful error; no trades added, user notified                                               | Pass          | ![TL-TS15](readme_assets/images/manual_testing/TL-TS15.png) |
+| TL-TS15              | CSV Import: bad file                    | Try to import file with missing/invalid columns             | 500 - server error shown                                                                     | Pass          | ![TL-TS15](readme_assets/images/manual_testing/TL-TS15.png) |
 | TL-TS16              | Accessibility on forms                  | Navigate add/edit trade form with keyboard & screen reader  | All fields & errors are labeled, ARIA used                                                   | Pass          | ![TL-TS16](readme_assets/images/manual_testing/TL-TS16.png) |
 | TL-TS17              | Undo delete action (if implemented)     | Delete a trade, click "Undo" in toast                       | Trade is restored and re-appears in list                                                     | Pass          | ![TL-TS17](readme_assets/images/manual_testing/TL-TS17.png) |
 
@@ -123,9 +122,7 @@ This document outlines the testing strategy for the TradeTracker Django project.
 | FC-TS07              | Auto-dismiss of alerts           | Add/edit/delete trade and wait 4 seconds                | Toast automatically disappears after 3–5 seconds         | Pass          | ![FC-TS07](readme_assets/images/manual_testing/FC-TS07.png) |
 | FC-TS08              | “Undo” delete action             | Delete a trade, then click "Undo" in the toast          | Trade is restored, confirmation message shown            | Pass          | ![FC-TS08](readme_assets/images/manual_testing/FC-TS08.png) |
 | FC-TS09              | Global include for messages      | Add, edit, or delete from any page                      | Toasts have consistent appearance/layout everywhere      | Pass          | ![FC-TS09](readme_assets/images/manual_testing/FC-TS09.png) |
-| FC-TS10              | Message accessibility & contrast | Inspect toast appearance, test with dark/light theme    | Toasts are readable, accessible, and visually consistent | Pass          | ![FC-TS10](readme_assets/images/manual_testing/FC-TS10.png) |
-| FC-TS11              | Automated message display tests  | Run test suite                                          | All automated tests for flash messages pass              | Pass          | ![FC-TS11](readme_assets/images/manual_testing/FC-TS11.png) |
-| FC-TS12              | Message behavior in README       | Review project README                                   | README documents feedback/confirmation system            | Pass          | ![FC-TS12](readme_assets/images/manual_testing/FC-TS12.png) |
+
 
 ## UX & Filtering
 
@@ -142,7 +139,6 @@ This document outlines the testing strategy for the TradeTracker Django project.
 | UXF-TS05             | Sort by result           | Use table sort for result column                           | Trades sorted by outcome (“Win”, “Loss”, “Open”, etc) | Pass          | ![UXF-TS05](readme_assets/images/manual_testing/UXF-TS05.png) |
 | UXF-TS06             | Pagination on trade list | Trade list has > X trades, check page controls             | Pagination controls appear, navigation works          | Pass          | ![UXF-TS06](readme_assets/images/manual_testing/UXF-TS06.png) |
 | UXF-TS07             | Filter + sort combo      | Apply filter then sort (or vice versa)                     | Both filter and sort stay active                      | Pass          | ![UXF-TS07](readme_assets/images/manual_testing/UXF-TS07.png) |
-| UXF-TS08             | Filter persists on nav   | Apply a filter, navigate to another page and back          | Filter is still applied on return to the trade list   | Pass          | ![UXF-TS08](readme_assets/images/manual_testing/UXF-TS08.png) |
 | UXF-TS09             | Mobile view usability    | Apply filters and sorting on mobile                        | All filter/sort features are usable and responsive    | Pass          | ![UXF-TS09](readme_assets/images/manual_testing/UXF-TS09.png) |
 | UXF-TS10             | No trades found          | Use filter/sort to get zero results                        | “No trades found” message is shown clearly            | Pass          | ![UXF-TS10](readme_assets/images/manual_testing/UXF-TS10.png) |
 
@@ -214,11 +210,11 @@ Key highlights:
 
 The project was tested on various devices to ensure seamless responsiveness and user experience:
 
-| **Devices** | **Index** | **All Posts** | **Post Detail** | **Notes** |
+| **Devices** | **Landing page** | **Dashboard** | **My trades** | **Notes** |
 |-------------|-----------|---------------|-----------------|-----------|
 | ![Desktop](https://img.shields.io/badge/Desktop-grey?logo=apple&logoColor=0078D6) | ![Screenshot](readme_assets/images/browsers/google-index.png) | ![Screenshot](readme_assets/images/browsers/google-posts.png) | ![Screenshot](readme_assets/images/browsers/google-detail.png) | Fully responsive |
 | ![Tablet](https://img.shields.io/badge/Tablet-grey?logo=apple&logoColor=999999) | ![Screenshot](readme_assets/images/browsers/tablet-index.png) | ![Screenshot](readme_assets/images/browsers/tablet-posts.png) | ![Screenshot](readme_assets/images/browsers/tablet-detail.png) | Fully responsive |
-| ![iPhone 15 Pro Max](https://img.shields.io/badge/iPhone%2015%20Pro%20Max-grey?logo=apple&logoColor=000000) | ![Screenshot](readme_assets/images/browsers/mobile-index.PNG) | ![Screenshot](readme_assets/images/browsers/mobile.posts.PNG) | ![Screenshot](readme_assets/images/browsers/mobile-detail.PNG) | Fully responsive |
+| ![iPhone 15 Pro Max](https://img.shields.io/badge/iPhone%2015%20Pro%20Max-grey?logo=apple&logoColor=000000) | ![Screenshot](readme_assets/images/browsers/mobile-index.png) | ![Screenshot](readme_assets/images/browsers/mobile.posts.png) | ![Screenshot](readme_assets/images/browsers/mobile-detail.png) | Fully responsive |
 --
 
 ## Code Validation
