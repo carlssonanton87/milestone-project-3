@@ -158,17 +158,30 @@ python manage.py test
 
 ### `trades/tests.py`
 
-| Test Name                     | Purpose |
-|------------------------------|---------|
-| `test_return_percent`        | Ensures return percentage is correctly calculated |
-| `test_holding_days`          | Ensures holding duration (in days) is correct |
-| `test_trade_str_representation` | Ensures `__str__` returns expected format |
-| `test_trade_outcome_choices` | Verifies valid outcome values (`win`, `loss`, `open`) |
-| `test_open_trade_return_none` | Ensures open trades return `None` for return and holding time |
+| Test Name                           | Purpose                                                                                  |
+|--------------------------------------|------------------------------------------------------------------------------------------|
+| `test_return_percent`                | Ensures return percentage is correctly calculated.                                       |
+| `test_holding_days`                  | Ensures holding duration (in days) is correct.                                           |
+| `test_trade_str_representation`      | Ensures `__str__` returns expected format for the Trade model.                           |
+| `test_trade_outcome_choices`         | Verifies valid outcome values (`win`, `loss`, `open`).                                   |
+| `test_open_trade_return_none`        | Ensures open trades return `None` for return and holding time.                           |
+| `test_trade_list_shows_only_own_trades` | Verifies each user only sees their own trades in the trade list.                        |
+| `test_create_trade`                  | Checks that a user can successfully create a new trade.                                  |
+| `test_edit_trade`                    | Ensures a user can edit and update their own trade.                                      |
+| `test_delete_trade`                  | Confirms a user can delete their own trade.                                              |
+| `test_cannot_edit_another_users_trade` | Ensures users cannot edit trades belonging to others (should result in 404).            |
+| `test_cannot_delete_another_users_trade` | Ensures users cannot delete trades belonging to others (should result in 404).          |
+| `test_create_shows_success_message`  | Checks that a success message is shown after creating a trade.                           |
+| `test_edit_shows_success_message`    | Checks that a success message is shown after editing a trade.                            |
+| `test_delete_shows_success_message`  | Checks that a success message is shown after deleting a trade.                           |
+| `test_undo_delete_shows_success_message` | Checks that a success message is shown after undoing a trade deletion.                 |
+
 
 ## 🧪 Optional: Run with coverage
 pip install coverage
+
 coverage run manage.py test
+
 coverage report
 
 ---
