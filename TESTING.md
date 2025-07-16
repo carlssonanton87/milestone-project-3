@@ -242,13 +242,16 @@ To ensure code quality and adherence to best practices, I validated my custom Ja
 
 | **Script Type** | **Validation Screenshot**  | **Comments** |
 |-----------------|----------------------------|--------------|
-| `javaScript Code` | ![base validation](readme_assets/images/code_validation/js-validation.png) | |
+| `javaScript Code` | ![base validation](readme_assets/images/code_validation/js-validation.png) |Test of JS in dashboard.html |
 
 ---
 
  ## Lighthouse Testing
 
-Lighthouse was utilized to evaluate the **performance**, **accessibility**, **best practices**, and **SEO** of the Green Local Veggies application.
+Lighthouse was utilized to evaluate the **performance**, **accessibility**, **best practices**, and **SEO** of the Trade Tracker application.
+
+![Screenshot](readme_assets/images/browsers/lighthouse.png) 
+
 
 #### Testing Overview
 
@@ -288,7 +291,7 @@ All Python files passed the validation checks, confirming compliance with PEP8 s
 [Go to Contents](#contents)
 
 ## 🧹 TODO (Future)
-- Add Automated test part
+- Add more Automated test parts
 - Add integration tests
 - Add form validation tests
 - Add Performance Testing

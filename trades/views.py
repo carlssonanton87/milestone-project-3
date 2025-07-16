@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import UserCreationForm
-from django.conf import settings  # ← must come before using settings
+from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -19,26 +19,34 @@ from .models import Trade
 from .forms import TradeForm, CSVImportForm, CustomUserCreationForm
 
 
+# Utility view for testing error logging tools (like Sentry)
 def trigger_error(request):
-    # this intentionally raises a ZeroDivisionError so you can test Sentry/etc
+    # This view intentionally crashes to test error handling.
     division_by_zero = 1 / 0
+
+
+# ----------- Account & Profile Management ------------
 
 
 @login_required
 def account_view(request):
     """
-    My Account page:
-     - Link to change password
-     - Button to delete all trades
-     - Button to delete the user account
+    Show the "My Account" page.
+    Includes options to:
+      - Change password
+      - Delete all trades
+      - Delete the account entirely
     """
     return render(request, "trades/account.html")
 
 
 @login_required
 def delete_all_trades(request):
+    """
+    Delete all trades for the logged-in user.
+    Used from the My Account page (POST only).
+    """
     if request.method == "POST":
-        # Delete every trade belonging to the user
         Trade.objects.filter(user=request.user).delete()
         messages.success(request, "All your trades have been deleted.")
     return redirect("account")
@@ -46,31 +54,34 @@ def delete_all_trades(request):
 
 @login_required
 def delete_account(request):
+    """
+    Delete both user account and all related trades.
+    Logs user out and redirects to landing page.
+    """
     if request.method == "POST":
-        # First, delete all trades
         Trade.objects.filter(user=request.user).delete()
-        # Then, log out & delete the user
         user = request.user
         auth_logout(request)
         user.delete()
         messages.info(
             request, "Your account and all data have been permanently deleted."
         )
-        return redirect("landing")  # landing_redirect view
+        return redirect("landing")
     return redirect("account")
+
+
+# ----------- Instrument Search / AJAX Autocomplete ------------
 
 
 @login_required
 def instrument_search(request):
     """
-    AJAX endpoint for jQuery UI Autocomplete.
-    Expects `term` in the query string; returns a list of {label, value}.
+    API endpoint for the trade instrument autocomplete search box.
+    Uses AlphaVantage SYMBOL_SEARCH to get real instrument names & symbols.
     """
     term = request.GET.get("term", "").strip()
     suggestions = []
-
     if term:
-        # read your key at call-time
         api_key = settings.INSTRUMENT_API_KEY
         resp = requests.get(
             "https://www.alphavantage.co/query",
@@ -82,39 +93,59 @@ def instrument_search(request):
                 sym = match.get("1. symbol", "")
                 name = match.get("2. name", "")
                 suggestions.append({"label": f"{sym} – {name}", "value": sym})
-
     return JsonResponse(suggestions, safe=False)
 
 
+# ----------- Landing & Auth Views ------------
+
+
 def landing_redirect(request):
+    """
+    If logged in: go to dashboard.
+    If not: show public landing page.
+    """
     if request.user.is_authenticated:
         return redirect("dashboard")
     return render(request, "trades/landing.html")
 
 
 def custom_logout(request):
+    """
+    Log out the user, show a message, and redirect to landing page.
+    """
     logout(request)
     messages.info(request, "You have been logged out.")
     return redirect("landing")
 
 
 def signup_view(request):
+    """
+    Sign up (register) new user.
+    On success: log in user and redirect to dashboard.
+    """
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)  # Use custom form!
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("dashboard")
+            form.save()
+            messages.success(request, "New user created! You can now log in.")
+            return redirect("login")
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, "registration/signup.html", {"form": form})
+
+
+# ----------- Dashboard & Insights ------------
 
 
 @login_required
 def dashboard(request):
     """
-    Trading dashboard showing stats and optional date filters (presets + slider).
-    Defaults to last 7 days if no filter provided.
+    Dashboard view with all trade statistics and date range filtering.
+    Shows:
+     - total trades, open/closed count, win rate
+     - average return, average holding time
+     - extra stats: average win hold, win streak, top profit
+     - chart data for return% over time (excluding open trades)
     """
     range_filter = request.GET.get("range", "")
     start_param = request.GET.get("start")
@@ -123,7 +154,7 @@ def dashboard(request):
 
     trades = Trade.objects.filter(user=request.user)
 
-    # 1) Custom slider range wins
+    # Custom slider range has highest priority
     if start_param and end_param:
         try:
             start_date = date.fromisoformat(start_param)
@@ -133,7 +164,7 @@ def dashboard(request):
         except ValueError:
             pass
 
-    # 2) Otherwise apply preset filter
+    # Otherwise check for a preset date filter (week, month, etc)
     elif range_filter:
         if range_filter == "today":
             trades = trades.filter(entry_date=today)
@@ -158,13 +189,14 @@ def dashboard(request):
         elif range_filter == "this_year":
             trades = trades.filter(entry_date__year=today.year)
 
-    # 3) Fallback: last 7 days
+    # If nothing else, default to "last 7 days"
     else:
         default_start = today - timedelta(days=6)
         trades = trades.filter(entry_date__range=(default_start, today))
         range_filter = "last_7_days"
 
-    # --- Stats ---
+    # -- Calculating key statistics for the dashboard --
+
     total_trades = trades.count()
     wins = trades.filter(outcome="win").count()
     closed_trades = trades.exclude(outcome="open").count()
@@ -180,16 +212,14 @@ def dashboard(request):
     holding_days = [t.holding_days() for t in trades if t.holding_days() is not None]
     avg_holding = sum(holding_days) / len(holding_days) if holding_days else 0
 
-    # ─── New Metrics ───────────────────────────────────
-
-    # 1) Average Win Hold (avg holding_days of only 'win' trades)
+    # Extra: average holding for wins only, win streak, top win
     win_trades = trades.filter(outcome="win").exclude(exit_date__isnull=True)
     if win_trades:
         avg_win_hold = sum(t.holding_days() for t in win_trades) / win_trades.count()
     else:
         avg_win_hold = 0
 
-    # 2) Win Streak (longest consecutive sequence of 'win' outcomes in date order)
+    # Find the longest win streak
     sorted_trades = trades.order_by("entry_date")
     max_streak = curr_streak = 0
     for t in sorted_trades:
@@ -199,7 +229,7 @@ def dashboard(request):
         else:
             curr_streak = 0
 
-    # 3) Top Win $ (largest gross profit: (exit_price - entry_price) * position_size)
+    # Top win in terms of raw profit (not %)
     profits = [
         float((t.exit_price - t.entry_price) * t.position_size)
         for t in win_trades
@@ -207,9 +237,7 @@ def dashboard(request):
     ]
     top_win = max(profits) if profits else 0
 
-    # ────────────────────────────────────────────────────
-
-    # --- Chart data --- (exclude open trades)
+    # Prepare data for the performance chart (average return % per day)
     chart_data = defaultdict(list)
     for t in trades.exclude(outcome="open").order_by("entry_date"):
         rp = t.return_percent()
@@ -242,8 +270,15 @@ def dashboard(request):
     return render(request, "trades/dashboard.html", context)
 
 
+# ----------- Trade CRUD Views ------------
+
+
 @login_required
 def trade_list(request):
+    """
+    Show all trades for this user.
+    Also passes unique instruments for the filter menu.
+    """
     trades = Trade.objects.filter(user=request.user).order_by("-entry_date")
     instruments = (
         trades.values_list("instrument", flat=True).distinct().order_by("instrument")
@@ -260,6 +295,10 @@ def trade_list(request):
 
 @login_required
 def add_trade(request):
+    """
+    Add a new trade via form.
+    On success, the trade is associated with the current user.
+    """
     form = TradeForm(request.POST or None)
     if form.is_valid():
         trade = form.save(commit=False)
@@ -272,6 +311,10 @@ def add_trade(request):
 
 @login_required
 def edit_trade(request, pk):
+    """
+    Edit a trade (only if it belongs to the user).
+    Uses same template as add.
+    """
     trade = get_object_or_404(Trade, pk=pk, user=request.user)
     form = TradeForm(request.POST or None, instance=trade)
     if form.is_valid():
@@ -283,8 +326,12 @@ def edit_trade(request, pk):
 
 @login_required
 def delete_trade(request, pk):
+    """
+    Delete a trade, but allow undo (stores the trade data in session for one click).
+    """
     trade = get_object_or_404(Trade, pk=pk, user=request.user)
     if request.method == "POST":
+        # Save trade details to session for "Undo"
         request.session["deleted_trade"] = {
             "instrument": trade.instrument,
             "position_size": str(trade.position_size),
@@ -296,17 +343,18 @@ def delete_trade(request, pk):
             "notes": trade.notes,
         }
         trade.delete()
-
         undo_url = reverse("undo_delete_trade")
         msg = mark_safe(f"Trade deleted. <a href='{undo_url}'>Undo</a>")
         messages.success(request, msg)
-
         return redirect("trade_list")
     return render(request, "trades/delete_trade.html", {"trade": trade})
 
 
 @login_required
 def undo_delete_trade(request):
+    """
+    Restore the last deleted trade (if undo was clicked).
+    """
     data = request.session.pop("deleted_trade", None)
     if data:
         Trade.objects.create(
@@ -326,8 +374,14 @@ def undo_delete_trade(request):
     return redirect("trade_list")
 
 
+# ----------- CSV Import/Export ------------
+
+
 @login_required
 def export_trades_csv(request):
+    """
+    Download all trades for this user as a CSV file.
+    """
     trades = Trade.objects.filter(user=request.user).order_by("entry_date")
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="trades.csv"'
@@ -362,6 +416,10 @@ def export_trades_csv(request):
 
 @login_required
 def import_trades_csv(request):
+    """
+    Import trades from a user-uploaded CSV.
+    Accepts a file, parses rows, and creates new trades for the user.
+    """
     form = CSVImportForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         csv_file = form.cleaned_data["file"]
@@ -387,14 +445,3 @@ def import_trades_csv(request):
         messages.success(request, f"Imported {count} trades successfully.")
         return redirect("trade_list")
     return render(request, "trades/import_trades.html", {"form": form})
-
-
-def signup_view(request):
-    if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            # Log user in or redirect
-    else:
-        form = CustomUserCreationForm()
-    return render(request, "registration/signup.html", {"form": form})

@@ -6,8 +6,15 @@ from .models import Trade
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+# ---------------- Trade Entry/Edit Form -----------------
+
 
 class TradeForm(forms.ModelForm):
+    """
+    Main form for creating and editing a trade.
+    Uses Crispy Forms for Bootstrap styling and includes custom validation.
+    """
+
     class Meta:
         model = Trade
         fields = [
@@ -21,7 +28,7 @@ class TradeForm(forms.ModelForm):
             "notes",
         ]
         widgets = {
-            # give our instrument field an ID for the autocomplete hook:
+            # Autocomplete hook for 'instrument' field
             "instrument": forms.TextInput(
                 attrs={
                     "id": "instrument-field",
@@ -29,7 +36,7 @@ class TradeForm(forms.ModelForm):
                     "class": "form-control",
                 }
             ),
-            # bootstrap‐style on the rest:
+            # Bootstrap styles for all fields
             "entry_date": forms.DateInput(
                 attrs={"type": "date", "class": "form-control"}
             ),
@@ -44,9 +51,11 @@ class TradeForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """
+        Set up crispy-forms helper for consistent styling and accessible layout.
+        """
         super().__init__(*args, **kwargs)
 
-        # Initialize Crispy helper
         self.helper = FormHelper(self)
         self.helper.form_method = "post"
         self.helper.layout = Layout(
@@ -83,31 +92,46 @@ class TradeForm(forms.ModelForm):
             Submit("submit", "Save Trade", css_class="btn btn-primary mt-2"),
         )
 
+    # ----------- Field-level Validation -----------
+
     def clean_position_size(self):
+        """
+        Ensure position size is positive (required for correct trade tracking).
+        """
         size = self.cleaned_data.get("position_size")
         if size is not None and size <= 0:
             raise ValidationError("Position size must be greater than zero.")
         return size
 
     def clean_entry_price(self):
+        """
+        Entry price must also be positive.
+        """
         price = self.cleaned_data.get("entry_price")
         if price is not None and price <= 0:
             raise ValidationError("Entry price must be greater than zero.")
         return price
 
     def clean_exit_price(self):
+        """
+        If user entered an exit price, ensure it is not negative.
+        """
         price = self.cleaned_data.get("exit_price")
-        # exit_price is optional, only validate if provided
         if price is not None and price < 0:
             raise ValidationError("Exit price cannot be negative.")
         return price
 
+    # ----------- Form-level Validation -----------
+
     def clean(self):
+        """
+        Additional validation:
+        - If both entry and exit date provided, exit cannot be before entry.
+        """
         cleaned = super().clean()
         entry = cleaned.get("entry_date")
         exit_ = cleaned.get("exit_date")
 
-        # If exit_date provided, it must not be before entry_date
         if entry and exit_:
             if exit_ < entry:
                 raise ValidationError(
@@ -117,14 +141,28 @@ class TradeForm(forms.ModelForm):
         return cleaned
 
 
+# ---------------- CSV Import Form -----------------
+
+
 class CSVImportForm(forms.Form):
+    """
+    Simple form for uploading a CSV file for bulk import of trades.
+    """
+
     file = forms.FileField(
         label="Select CSV file",
         help_text="Columns: instrument,position_size,entry_price,exit_price,entry_date,exit_date,outcome,notes",
     )
 
 
+# -------------- Custom Signup Form -----------------
+
+
 class CustomUserCreationForm(UserCreationForm):
+    """
+    Extends Django's built-in user creation form to require an email field.
+    """
+
     email = forms.EmailField(required=True)
 
     class Meta:
